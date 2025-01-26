@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { BookOpen, Home, Mail } from "lucide-react";
+import { BookOpenIcon, Home, Mail } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 interface NavItemsProps {
@@ -8,7 +8,7 @@ interface NavItemsProps {
 
 const navItems = [
   { label: "Home", path: "/", icon: Home },
-  { label: "All Books", path: "/all-books", icon: BookOpen },
+  { label: "All Books", path: "/all-books", icon: BookOpenIcon },
   { label: "Contact", path: "/contact", icon: Mail },
 ];
 

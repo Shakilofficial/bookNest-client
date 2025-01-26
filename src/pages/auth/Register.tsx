@@ -1,8 +1,76 @@
+import { Form } from "@/components/form/Form";
+import { PasswordInput } from "@/components/form/PasswordInput";
+import { TextInput } from "@/components/form/TextInput";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock, Mail, User } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { z } from "zod";
+
+// Define form schema using Zod
+const registerSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+// Define form values type based on the schema
+type FormValues = z.infer<typeof registerSchema>;
 
 const Register = () => {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (data: FormValues) => {
+    console.log("Registration Data:", data);
+    // Handle registration logic here
+  };
+
   return (
-    <div>
-      <h1>This is the Register component</h1>
+    <div className="space-y-6">
+      <div className="space-y-2 text-center">
+        <h1 className="text-2xl md:text-3xl font-bold">Create an account</h1>
+        <p className="text-muted-foreground">
+          Enter your details to create your account
+        </p>
+      </div>
+
+      {/* Form */}
+      <Form form={form} onSubmit={onSubmit}>
+        <TextInput
+          name="name"
+          label="Name"
+          icon={User}
+          placeholder="John Doe"
+        />
+        <TextInput
+          name="email"
+          label="Email"
+          icon={Mail}
+          placeholder="john@example.com"
+          type="email"
+        />
+        <PasswordInput
+          name="password"
+          label="Password"
+          icon={Lock}
+          placeholder="Enter your password"
+        />
+      </Form>
+
+      {/* Already Have Account */}
+      <div className="text-center text-sm">
+        Already have an account?{" "}
+        <Link to="/auth/login" className="text-primary hover:underline">
+          Log in
+        </Link>
+      </div>
     </div>
   );
 };
