@@ -16,12 +16,12 @@ const AuthLayout = ({ backgroundImage }: AuthLayoutProps) => {
         style={{ backgroundImage: `url(${backgroundUrl})` }}
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-70"></div>
 
         <div className="relative z-10 flex flex-col justify-between h-full px-16 py-12">
           <div className="space-y-4">
-            <h1 className="text-5xl font-extrabold leading-tight">
-              Welcome to <span className="text-primary">Our Platform</span>
+            <h1 className="text-5xl font-extrabold leading-tight text-white">
+              Welcome to <span className="text-primary">BookNest</span>
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
               Experience a secure, fast, and user-friendly environment designed
@@ -30,7 +30,7 @@ const AuthLayout = ({ backgroundImage }: AuthLayoutProps) => {
           </div>
 
           <footer className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Your Company. All rights reserved.
+            &copy; {new Date().getFullYear()} BookNest. All rights reserved.
           </footer>
         </div>
       </div>

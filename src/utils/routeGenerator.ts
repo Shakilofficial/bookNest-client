@@ -23,3 +23,4 @@ export const routeGenerator = (items: TUserPath[]) => {
 
   return routes;
 };
+

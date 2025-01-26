@@ -13,15 +13,16 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: routeGenerator(PublicPaths),
   },
+
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children: routeGenerator(AdminPaths),
+  },
   {
     path: "/auth",
     element: <AuthLayout />,
     children: routeGenerator(authPaths),
-  },
-  {
-    path: "/admin",
-    element: <DashboardLayout />,
-    children: routeGenerator(AdminPaths),
   },
 ]);
 
