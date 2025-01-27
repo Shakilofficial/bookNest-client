@@ -22,8 +22,6 @@ const FeaturedBooks = () => {
     { name: "sortOrder", value: "desc" },
     { name: "limit", value: 10 },
   ]);
-
-  console.log(data);
   useEffect(() => {
     if (data?.data) {
       setProducts(data.data);
