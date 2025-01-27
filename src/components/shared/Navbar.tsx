@@ -1,4 +1,4 @@
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -10,6 +10,7 @@ import {
 import NavItems from "../utils/Navitems";
 import Logo from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
+import UserProfile from "./UserProfile";
 
 const Navbar = () => {
   return (
@@ -29,9 +30,7 @@ const Navbar = () => {
           <Button variant="ghost" size="icon" aria-label="Shopping Cart">
             <ShoppingCart className="h-6 w-6" />
           </Button>
-          <Button variant="ghost" size="icon" aria-label="User Account">
-            <User className="h-6 w-6" />
-          </Button>
+          <UserProfile />
 
           {/* Mobile Menu Trigger */}
           <Sheet>

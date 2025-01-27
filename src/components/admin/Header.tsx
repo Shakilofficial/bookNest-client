@@ -1,5 +1,6 @@
-import { Menu, User } from "lucide-react";
+import { Menu } from "lucide-react";
 import { ThemeToggle } from "../shared/ThemeToggle";
+import UserProfile from "../shared/UserProfile";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
@@ -28,7 +29,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
             <Input placeholder="Search..." className="max-w-[300px]" />
           </div>
           <ThemeToggle />
-          <User className="h-6 w-6" />
+          <UserProfile />
         </div>
       </div>
     </header>
