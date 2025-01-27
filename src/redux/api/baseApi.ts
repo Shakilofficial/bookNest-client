@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  BaseQueryApi,
   BaseQueryFn,
   FetchArgs,
   createApi,
@@ -7,6 +9,17 @@ import {
 import { toast } from "sonner";
 import { logout, setUser } from "../features/auth/authSlice";
 import { RootState } from "../store";
+
+interface ErrorData {
+  message: string;
+  stack?: string;
+  success: boolean;
+}
+
+interface IErrorResponse {
+  status: number;
+  data: ErrorData;
+}
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
@@ -25,59 +38,44 @@ const baseQuery = fetchBaseQuery({
 });
 
 const baseQueryWithRefreshToken: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  unknown
-> = async (args, api, extraOptions) => {
+  FetchArgs,
+  BaseQueryApi,
+  IErrorResponse
+> = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error) {
-    const status = result.error.status;
+    const error = result.error as IErrorResponse;
 
-    // Handle specific status codes
-    switch (status) {
-      case 401: {
-        // Refresh the token
-        const refreshResponse = await fetch(
-          `${API_BASE_URL}/auth/refresh-token`,
-          {
-            method: "POST",
-            credentials: "include",
-          }
+    if (error.status === 404 || error.status === 403) {
+      toast.error(error.data.message);
+    }
+
+    if (error.status === 401) {
+      const res = await fetch(
+        "http://localhost:5000/api/v1/auth/refresh-token",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (data?.data?.accessToken) {
+        const user = (api.getState() as RootState).auth.user;
+
+        api.dispatch(
+          setUser({
+            user,
+            token: data.data.accessToken,
+          })
         );
 
-        if (refreshResponse.ok) {
-          const refreshData = await refreshResponse.json();
-          const { accessToken } = refreshData?.data || {};
-
-          if (accessToken) {
-            const user = (api.getState() as RootState).auth.user;
-
-            // Update the user and token in the state
-            api.dispatch(
-              setUser({
-                user,
-                token: accessToken,
-              })
-            );
-
-            // Retry the original request with the new token
-            result = await baseQuery(args, api, extraOptions);
-          } else {
-            toast.error("Session expired. Please log in again.");
-            api.dispatch(logout()); // Dispatch logout if token refresh fails
-          }
-        } else {
-          toast.error("Failed to refresh token. Logging out.");
-          api.dispatch(logout()); // Dispatch logout if refresh fails
-        }
-        break;
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        api.dispatch(logout());
       }
-      case 404:
-        toast.error(result?.error?.data?.message || "Resource not found");
-        break;
-      default:
-        toast.error(result?.error?.data?.message || "An error occurred");
     }
   }
 

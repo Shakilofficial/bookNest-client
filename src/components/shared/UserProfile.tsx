@@ -2,17 +2,15 @@ import { logout } from "@/redux/features/auth/authSlice";
 import { useGetUserQuery } from "@/redux/features/user/userApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { RootState } from "@/redux/store";
-import { Avatar } from "@radix-ui/react-avatar";
 import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AvatarSkeleton from "../skeleton/AvatarSkeleton";
-import { AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
@@ -20,12 +18,12 @@ import {
 const UserProfile = () => {
   const { token } = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
-
-  const { data, isLoading } = useGetUserQuery(token ? { token } : null);
-
   const navigate = useNavigate();
 
-  const handleButtonClick = () => {
+  // Fetch user data
+  const { data, isLoading, error } = useGetUserQuery(token ? { token } : null);
+
+  const handleLoginRedirect = () => {
     if (!data) {
       navigate("/auth/login");
     }
@@ -36,16 +34,28 @@ const UserProfile = () => {
     navigate("/auth/login");
   };
 
+  const user = data?.data;
+
   if (isLoading) {
     return <AvatarSkeleton />;
   }
 
-  const user = data?.data;
-  console.log(user); // Check the response for profileImg
-
-  const handleImageError = () => {
-    console.log("Image failed to load, fallback to initials.");
-  };
+  if (error) {
+    console.error("Failed to fetch user data:", error);
+    return (
+      <Button
+        variant="ghost"
+        className="relative h-8 w-8 rounded-full"
+        onClick={handleLoginRedirect}
+      >
+        <Avatar className="h-8 w-8">
+          <AvatarFallback>
+            <User className="h-4 w-4" />
+          </AvatarFallback>
+        </Avatar>
+      </Button>
+    );
+  }
 
   return (
     <DropdownMenu>
@@ -53,19 +63,17 @@ const UserProfile = () => {
         <Button
           variant="ghost"
           className="relative h-8 w-8 rounded-full"
-          onClick={handleButtonClick}
+          onClick={!user ? handleLoginRedirect : undefined}
         >
-          <Avatar className="h-8 w-8">
+          <Avatar isLoggedIn={!!user}>
             {user ? (
               <>
                 <AvatarImage
-                  src={user?.profileImg}
-                  alt={user?.fullName || "User"}
-                  onError={handleImageError} // Handle error loading image
-                  className="h-full w-full object-cover"
+                  src={user.profileImg}
+                  alt={user.fullName || "User"}
                 />
                 <AvatarFallback>
-                  {user?.fullName?.[0]?.toUpperCase() || (
+                  {user.fullName?.[0]?.toUpperCase() || (
                     <User className="h-4 w-4" />
                   )}
                 </AvatarFallback>
@@ -80,24 +88,23 @@ const UserProfile = () => {
       </DropdownMenuTrigger>
       {user && (
         <DropdownMenuContent className="w-44" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-2">
-              <p className="text-sm font-medium leading-none">{user.name}</p>
-              <p className="text-xs leading-none text-muted-foreground">
-                {user.email}
-              </p>
-              <p className="text-xs leading-none text-muted-foreground">
-                {user?.role}
-              </p>
-            </div>
-          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/profile")}>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/settings")}>
-            Settings
-          </DropdownMenuItem>
+
+          {/* Conditionally render menu items based on user role */}
+          {user.role === "user" && (
+            <>
+              <DropdownMenuItem onClick={() => navigate("/wishlists")}>
+                WishLists
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/orders")}>
+                My Orders
+              </DropdownMenuItem>
+            </>
+          )}
+
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
         </DropdownMenuContent>

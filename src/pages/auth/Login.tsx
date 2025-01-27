@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form } from "@/components/form/Form";
 import { PasswordInput } from "@/components/form/PasswordInput";
 import { TextInput } from "@/components/form/TextInput";
