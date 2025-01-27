@@ -1,7 +1,16 @@
+import Categories from "@/components/main/Categories";
+import FeaturedBooks from "@/components/main/FeaturedBooks";
+import Hero from "@/components/main/Hero";
+import Container from "@/components/utils/Container";
+
 const Home = () => {
   return (
     <div>
-      <h1>This is the Home component</h1>
+      <Hero />
+      <Container>
+        <FeaturedBooks />
+        <Categories />
+      </Container>
     </div>
   );
 };

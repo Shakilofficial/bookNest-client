@@ -25,7 +25,7 @@ export type TResponse<T = any> = {
   message: string;
 };
 
-export type TResponseRedux<T = any> = TResponse<T> & BaseQueryApi;
+export type TResponseRedux<T> = TResponse<T> & BaseQueryApi;
 
 export type TQueryParam = {
   name: string;
