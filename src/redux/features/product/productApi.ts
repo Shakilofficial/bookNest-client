@@ -27,7 +27,72 @@ const productApi = baseApi.injectEndpoints({
         };
       },
     }),
+    // Fetch a single product by ID
+    getSingleProduct: builder.query({
+      query: (id: string) => ({
+        url: `/products/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+    }),
+
+    // Create a new product
+    createProduct: builder.mutation({
+      query: ({ payload, file }: { payload: TProduct; file: File }) => {
+        const formData = new FormData();
+        formData.append("coverImage", file);
+        formData.append("data", JSON.stringify(payload));
+
+        return {
+          url: "/products",
+          method: "POST",
+          body: formData,
+        };
+      },
+      transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+    }),
+
+    // Update a product by ID
+    updateProduct: builder.mutation({
+      query: ({
+        id,
+        payload,
+        file,
+      }: {
+        id: string;
+        payload: TProduct;
+        file?: File;
+      }) => {
+        const formData = new FormData();
+        if (file) {
+          formData.append("coverImage", file);
+        }
+        formData.append("data", JSON.stringify(payload));
+
+        return {
+          url: `/products/${id}`,
+          method: "PATCH",
+          body: formData,
+        };
+      },
+      transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+    }),
+
+    // Delete a product by ID
+    deleteProduct: builder.mutation({
+      query: (id: string) => ({
+        url: `/products/${id}`,
+        method: "DELETE",
+      }),
+      transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+    }),
   }),
 });
 
-export const { useGetAllProductsQuery } = productApi;
+export const {
+  useGetSingleProductQuery,
+  useGetAllProductsQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+} = productApi;

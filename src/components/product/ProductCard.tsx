@@ -126,7 +126,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             />
           </Button>
         </div>
-
         <Button
           onClick={handleAddToCart}
           disabled={!product.inStock}
