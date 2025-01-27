@@ -13,6 +13,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -25,24 +26,20 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-// Helper function for handling navigation
 const handleLoginRedirect = (navigate: any, data: any) => {
   if (!data) {
     navigate("/auth/login");
   }
 };
 
-// UserProfile Component
 const UserProfile = () => {
   const { token } = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // Fetch user data
   const { data, isLoading, error } = useGetUserQuery(token ? { token } : null);
   const user = data?.data;
 
-  // Handle logout
   const handleLogout = () => {
     dispatch(logout());
     navigate("/auth/login");
@@ -109,7 +106,6 @@ const UserProfile = () => {
                 <Button variant="ghost">Profile</Button>
               </DialogTrigger>
             </DropdownMenuItem>
-            {/* Conditionally render menu items based on user role */}
             {user.role === "user" && (
               <>
                 <DropdownMenuItem onClick={() => navigate("/wishlists")}>
@@ -127,17 +123,18 @@ const UserProfile = () => {
         )}
       </DropdownMenu>
       <DialogContent className="w-[400px] p-6 space-y-6 rounded-lg shadow-md">
-        {/* Dialog Header */}
         <DialogHeader className="text-center">
           <DialogTitle className="text-xl font-semibold">
             User Profile
           </DialogTitle>
         </DialogHeader>
 
-        {/* User Card */}
+        <DialogDescription className="sr-only">
+          This is the user profile dialog containing user details and profile
+          options.
+        </DialogDescription>
         <Card className="rounded-lg border overflow-hidden">
           <CardHeader className="flex flex-col items-center gap-4 p-6">
-            {/* Avatar */}
             <Avatar className="h-20 w-20">
               <AvatarImage
                 src={user.profileImg || "https://via.placeholder.com/150"}
@@ -148,14 +145,12 @@ const UserProfile = () => {
               </AvatarFallback>
             </Avatar>
 
-            {/* User Info */}
             <div className="text-center">
               <p className="text-lg font-medium">{user.name}</p>
               <Badge className="text-sm">{user.role}</Badge>
             </div>
           </CardHeader>
 
-          {/* User Details */}
           <CardContent className="p-6 space-y-3">
             <p>
               <strong>Email:</strong> {user.email}
@@ -171,13 +166,8 @@ const UserProfile = () => {
             </p>
           </CardContent>
 
-          {/* Action Button */}
           <CardFooter className="p-4">
-            <Button
-              variant="outline"
-              onClick={() => navigate(`/profile/edit/${user._id}`)}
-              className="w-full"
-            >
+            <Button variant="outline" className="w-full">
               Edit Profile
             </Button>
           </CardFooter>

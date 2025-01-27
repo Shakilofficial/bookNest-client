@@ -10,6 +10,21 @@ const userApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // Update the authenticated user's profile
+    updateProfile: builder.mutation({
+      query: ({ payload, file }) => {
+        const formData = new FormData();
+        formData.append("data", JSON.stringify(payload));
+        if (file) formData.append("profileImg", file);
+
+        return {
+          url: "/users/update-profile",
+          method: "PATCH",
+          body: formData,
+        };
+      },
+    }),
+
     // Fetch a single user by ID
     getSingleUser: builder.query({
       query: (id) => ({
@@ -27,21 +42,6 @@ const userApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // Update the authenticated user's profile
-    updateProfile: builder.mutation({
-      query: ({ payload, file }) => {
-        const formData = new FormData();
-        formData.append("data", JSON.stringify(payload));
-        if (file) formData.append("profileImg", file);
-
-        return {
-          url: "/users/update-profile",
-          method: "PATCH",
-          body: formData,
-        };
-      },
-    }),
-
     // Block a user by ID
     blockUser: builder.mutation({
       query: (id) => ({
@@ -54,8 +54,8 @@ const userApi = baseApi.injectEndpoints({
 
 export const {
   useGetUserQuery,
+  useUpdateProfileMutation,
   useGetSingleUserQuery,
   useGetAllUsersQuery,
-  useUpdateProfileMutation,
   useBlockUserMutation,
 } = userApi;

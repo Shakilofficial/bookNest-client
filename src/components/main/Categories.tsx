@@ -64,7 +64,9 @@ const Categories = () => {
                 key={category.name}
                 className="basis-1/2 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 hover:scale-105 transition-transform duration-500 ease-in-out"
               >
-                <Link to={`/category/${category.name.toLowerCase()}`}>
+                <Link
+                  to={`all-products?category=${category.name.toLowerCase()}`}
+                >
                   <div className="relative flex h-[100px] w-full items-center justify-center overflow-hidden rounded-lg border bg-background">
                     <Particles
                       className="absolute inset-0 z-0 opacity-50"
