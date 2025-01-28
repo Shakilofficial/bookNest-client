@@ -1,6 +1,11 @@
 import AuthLayout from "@/layouts/AuthLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import MainLayout from "@/layouts/MainLayout";
+import Dashboard from "@/pages/admin/Dashboard";
+import Orders from "@/pages/admin/Orders";
+import Products from "@/pages/admin/Products";
+import Settings from "@/pages/admin/Settings";
+import Users from "@/pages/admin/Users";
 import { routeGenerator } from "@/utils/routeGenerator";
 import { createBrowserRouter } from "react-router-dom";
 import { authPaths } from "./AuthRoutes";
@@ -25,6 +30,32 @@ const router = createBrowserRouter([
         <DashboardLayout />
       </ProtectedRoute>
     ),
+    children: [
+      {
+        path: "users",
+        element: (
+          <ProtectedRoute role="admin">
+            <Users />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "",
+        element: <Dashboard />,
+      },
+      {
+        path: "products",
+        element: <Products />,
+      },
+      {
+        path: "orders",
+        element: <Orders />,
+      },
+      {
+        path: "settings",
+        element: <Settings />,
+      },
+    ],
   },
 ]);
 

@@ -41,6 +41,7 @@ const handleLoginRedirect = (navigate: any, data: any) => {
     navigate("/auth/login");
   }
 };
+
 const profileSchema = z.object({
   name: z.string().optional(),
   phone: z.string().optional(),
@@ -123,38 +124,44 @@ const UserProfile = () => {
 
   return (
     <Dialog>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="relative h-8 w-8 rounded-full"
-            onClick={
-              !user ? () => handleLoginRedirect(navigate, data) : undefined
-            }
-          >
-            <Avatar isLoggedIn={!!user}>
-              {user ? (
-                <>
-                  <AvatarImage
-                    src={user.profileImg}
-                    alt={user.fullName || "User"}
-                  />
+      {!user ? (
+        <Button
+          variant="ghost"
+          className="relative h-8 w-8 rounded-full"
+          onClick={() => handleLoginRedirect(navigate, data)}
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>
+              <User className="h-4 w-4" />
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      ) : (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Avatar isLoggedIn={!!user}>
+                {user ? (
+                  <>
+                    <AvatarImage
+                      src={user.profileImg}
+                      alt={user.fullName || "User"}
+                    />
+                    <AvatarFallback>
+                      {user.fullName?.[0]?.toUpperCase() || (
+                        <User className="h-4 w-4" />
+                      )}
+                    </AvatarFallback>
+                  </>
+                ) : (
                   <AvatarFallback>
-                    {user.fullName?.[0]?.toUpperCase() || (
-                      <User className="h-4 w-4" />
-                    )}
+                    <User className="h-4 w-4" />
                   </AvatarFallback>
-                </>
-              ) : (
-                <AvatarFallback>
-                  <User className="h-4 w-4" />
-                </AvatarFallback>
-              )}
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
+                )}
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
 
-        {user && (
           <DropdownMenuContent className="w-44" align="end" forceMount>
             <DropdownMenuItem>
               <DialogTrigger asChild>
@@ -166,7 +173,7 @@ const UserProfile = () => {
                 <DropdownMenuItem onClick={() => navigate("#")}>
                   WishLists
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/orders")}>
+                <DropdownMenuItem onClick={() => navigate("/order")}>
                   My Orders
                 </DropdownMenuItem>
               </>
@@ -175,8 +182,9 @@ const UserProfile = () => {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
-        )}
-      </DropdownMenu>
+        </DropdownMenu>
+      )}
+
       <DialogContent className="w-[400px] p-6 space-y-6 rounded-lg shadow-md">
         <DialogHeader className="text-center">
           <DialogTitle className="text-xl font-semibold">
@@ -306,13 +314,13 @@ const UserProfile = () => {
                         )}
                       </div>
                     </CardContent>
-                    <CardFooter className="p-4">
+                    <CardFooter>
                       <Button
                         type="submit"
                         disabled={isUpdating}
-                        className="w-full"
+                        variant="primary"
                       >
-                        {isUpdating ? "Updating..." : "Update Profile"}
+                        {isUpdating ? "Updating..." : "Update"}
                       </Button>
                     </CardFooter>
                   </Card>
