@@ -78,7 +78,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </CardContent>
       <CardFooter className="p-2 flex justify-between items-center gap-1">
         <Link to={`/product/${product._id}`} className="flex-1">
-          <Button variant="outline" className="p-1 text-xs sm:p-2 md:p-3">
+          <Button variant="secondary" className="p-1 text-xs sm:p-2 md:p-3">
             <Eye className="text-sm sm:text-base md:text-lg" />
             <span className="hidden lg:inline text-xs">View Details</span>
           </Button>
