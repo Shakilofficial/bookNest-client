@@ -1,73 +1,50 @@
 import { baseApi } from "@/redux/api/baseApi";
-import { TQueryParam, TResponseRedux, TReview } from "@/types";
 
 const reviewApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch all reviews for a specific product
-    getAllReviews: builder.query({
-      query: (args) => {
-        const params = new URLSearchParams();
-        if (args) {
-          args.forEach((item: TQueryParam) => {
-            params.append(item.name, item.value as string);
-          });
-        }
-        return {
-          url: `/reviews/product/${args.productId}`,
-          method: "GET",
-          params: params,
-        };
-      },
-      transformResponse: (response: TResponseRedux<TReview[]>) => {
-        return {
-          data: response.data,
-          meta: response.meta,
-        };
-      },
+    fetchProductReviews: builder.query({
+      query: (productId) => ({
+        url: `/reviews/product/${productId}`,
+        method: "GET",
+      }),
+      providesTags: ["Reviews"],
     }),
 
     // Add a new review
-    addReview: builder.mutation({
-      query: (payload: TReview) => {
-        return {
-          url: "/reviews",
-          method: "POST",
-          body: payload,
-        };
-      },
-      transformResponse: (response: TResponseRedux<TReview>) => response.data,
+    createReview: builder.mutation({
+      query: ({ productId, reviewData }) => ({
+        url: `/reviews/product/${productId}`,
+        method: "POST",
+        body: reviewData,
+      }),
+      invalidatesTags: ["Reviews"],
     }),
 
-    // Update a review by ID
+    // Update an existing review
     updateReview: builder.mutation({
-      query: ({ id, payload }: { id: string; payload: TReview }) => {
-        return {
-          url: `/reviews/${id}`,
-          method: "PATCH",
-          body: payload,
-        };
-      },
-      transformResponse: (response: TResponseRedux<TReview>) => response.data,
+      query: ({ reviewId, reviewData }) => ({
+        url: `/reviews/${reviewId}`,
+        method: "PATCH",
+        body: reviewData,
+      }),
+      invalidatesTags: ["Reviews"],
     }),
 
-    // Delete a review by ID
+    // Delete a review
     deleteReview: builder.mutation({
-      query: (id: string) => {
-        return {
-          url: `/reviews/${id}`,
-          method: "DELETE",
-        };
-      },
-      transformResponse: (response: TResponseRedux<{ message: string }>) =>
-        response.data,
+      query: (reviewId) => ({
+        url: `/reviews/${reviewId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Reviews"],
     }),
   }),
 });
 
-// Export hooks for usage in components
 export const {
-  useGetAllReviewsQuery,
-  useAddReviewMutation,
+  useFetchProductReviewsQuery,
+  useCreateReviewMutation,
   useUpdateReviewMutation,
   useDeleteReviewMutation,
 } = reviewApi;
