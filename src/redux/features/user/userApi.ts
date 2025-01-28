@@ -23,6 +23,7 @@ const userApi = baseApi.injectEndpoints({
           body: formData,
         };
       },
+      invalidatesTags: ["User"],
     }),
 
     // Fetch a single user by ID
@@ -48,6 +49,7 @@ const userApi = baseApi.injectEndpoints({
         url: `/users/${id}`,
         method: "PATCH",
       }),
+      invalidatesTags: ["User"],
     }),
   }),
 });

@@ -1,10 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { logout } from "@/redux/features/auth/authSlice";
-import { useGetUserQuery } from "@/redux/features/user/userApi";
+import {
+  useGetUserQuery,
+  useUpdateProfileMutation,
+} from "@/redux/features/user/userApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { RootState } from "@/redux/store";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { z } from "zod";
 import AvatarSkeleton from "../skeleton/AvatarSkeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
@@ -25,20 +33,67 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const handleLoginRedirect = (navigate: any, data: any) => {
   if (!data) {
     navigate("/auth/login");
   }
 };
+const profileSchema = z.object({
+  name: z.string().optional(),
+  phone: z.string().optional(),
+  city: z.string().optional(),
+  address: z.string().optional(),
+  profileImg: z.any().optional(),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const UserProfile = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { token } = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const { data, isLoading, error } = useGetUserQuery(token ? { token } : null);
   const user = data?.data;
+
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: user?.name || "",
+      phone: user?.phone || "",
+      city: user?.city || "",
+      address: user?.address || "",
+    },
+  });
+
+  const onSubmit = async (formData: ProfileFormValues) => {
+    const { profileImg, ...payload } = formData;
+
+    const dataToSend = {
+      payload,
+      file: profileImg[0],
+    };
+
+    try {
+      await updateProfile(dataToSend).unwrap();
+      toast.success("Profile updated successfully!");
+      setIsDialogOpen(false);
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+      toast.error("Failed to update profile.");
+    }
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -108,7 +163,7 @@ const UserProfile = () => {
             </DropdownMenuItem>
             {user.role === "user" && (
               <>
-                <DropdownMenuItem onClick={() => navigate("/wishlists")}>
+                <DropdownMenuItem onClick={() => navigate("#")}>
                   WishLists
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/orders")}>
@@ -167,9 +222,103 @@ const UserProfile = () => {
           </CardContent>
 
           <CardFooter className="p-4">
-            <Button variant="outline" className="w-full">
-              Edit Profile
-            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">Update Profile</Button>
+              </DialogTrigger>
+              <DialogContent className="w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Update Profile</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  <Card className="rounded-lg">
+                    <CardHeader className="flex items-center gap-4 p-4">
+                      <Avatar className="h-16 w-16">
+                        <AvatarImage
+                          src={
+                            user?.profileImg ||
+                            "https://via.placeholder.com/150"
+                          }
+                        />
+                        <AvatarFallback>
+                          {user?.name?.[0]?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <Label htmlFor="profileImg">Profile Image</Label>
+                        <Input
+                          type="file"
+                          id="profileImg"
+                          {...register("profileImg")}
+                        />
+                        {errors.profileImg && (
+                          <p className="text-red-500">
+                            {errors.profileImg.message as string}
+                          </p>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3 p-4">
+                      <div>
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                          id="name"
+                          {...register("name")}
+                          placeholder="Your name"
+                        />
+                        {errors.name && (
+                          <p className="text-red-500">{errors.name.message}</p>
+                        )}
+                      </div>
+                      <div>
+                        <Label htmlFor="phone">Phone</Label>
+                        <Input
+                          id="phone"
+                          {...register("phone")}
+                          placeholder="Your phone number"
+                        />
+                        {errors.phone && (
+                          <p className="text-red-500">{errors.phone.message}</p>
+                        )}
+                      </div>
+                      <div>
+                        <Label htmlFor="city">City</Label>
+                        <Input
+                          id="city"
+                          {...register("city")}
+                          placeholder="Your city"
+                        />
+                        {errors.city && (
+                          <p className="text-red-500">{errors.city.message}</p>
+                        )}
+                      </div>
+                      <div>
+                        <Label htmlFor="address">Address</Label>
+                        <Input
+                          id="address"
+                          {...register("address")}
+                          placeholder="Your address"
+                        />
+                        {errors.address && (
+                          <p className="text-red-500">
+                            {errors.address.message}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="p-4">
+                      <Button
+                        type="submit"
+                        disabled={isUpdating}
+                        className="w-full"
+                      >
+                        {isUpdating ? "Updating..." : "Update Profile"}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </form>
+              </DialogContent>
+            </Dialog>
           </CardFooter>
         </Card>
       </DialogContent>
