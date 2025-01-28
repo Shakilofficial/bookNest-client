@@ -1,4 +1,6 @@
-import { Menu, ShoppingCart } from "lucide-react";
+import { Menu } from "lucide-react";
+
+import { Cart } from "../main/Cart";
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -27,9 +29,7 @@ const Navbar = () => {
         {/* Actions Section */}
         <div className="flex items-center space-x-6">
           <ThemeToggle />
-          <Button variant="ghost" size="icon" aria-label="Shopping Cart">
-            <ShoppingCart className="h-6 w-6" />
-          </Button>
+          <Cart />
           <UserProfile />
 
           {/* Mobile Menu Trigger */}

@@ -56,7 +56,7 @@ const FeaturedProducts = () => {
             {products.map((product) => (
               <CarouselItem
                 key={product._id}
-                className="flex-shrink-0 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 hover:scale-105 transition-transform duration-300 ease-in-out"
+                className="flex-shrink-0 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 hover:scale-105 transition-transform duration-300 ease-in-out"
               >
                 <div className="p-2">
                   <FeaturedProductCard product={product} />

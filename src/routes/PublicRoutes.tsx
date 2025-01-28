@@ -2,6 +2,9 @@ import AllProducts from "@/pages/AllProducts";
 import Contact from "@/pages/Contact";
 import Home from "@/pages/Home";
 import ProductDetails from "@/pages/ProductDetails";
+import Order from "@/pages/user/Order";
+import VerifyOrder from "@/pages/user/VerifyOrder";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const PublicPaths = [
   {
@@ -23,5 +26,23 @@ export const PublicPaths = [
     name: "contact",
     path: "/contact",
     element: <Contact />,
+  },
+  {
+    name: "order",
+    path: "/order",
+    element: (
+      <ProtectedRoute role="user">
+        <Order />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    name: "order-verify",
+    path: "/order/verify",
+    element: (
+      <ProtectedRoute role="user">
+        <VerifyOrder />
+      </ProtectedRoute>
+    ),
   },
 ];

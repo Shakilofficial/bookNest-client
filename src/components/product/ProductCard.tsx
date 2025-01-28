@@ -8,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { addToCart } from "@/redux/features/cart/cartSlice";
+import { useAppDispatch } from "@/redux/hook";
 import { TProduct } from "@/types";
 import { Eye, Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
@@ -18,6 +20,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const dispatch = useAppDispatch();
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLike = () => {
@@ -25,7 +28,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   const handleAddToCart = () => {
-    // Implement add to cart functionality
+    dispatch(
+      addToCart({
+        product: product._id,
+        title: product.title,
+        price: product.price,
+        quantity: 1,
+        stock: product.quantity,
+        coverImage: product.coverImage,
+      })
+    );
   };
 
   return (
@@ -85,7 +97,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </Link>
         <Button
           variant="default"
-          onClick={handleAddToCart}
+          onClick={() => handleAddToCart()}
           disabled={!product.inStock}
           className="p-1 text-xs sm:p-2 md:p-3"
         >

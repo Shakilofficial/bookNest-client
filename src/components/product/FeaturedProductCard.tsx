@@ -16,6 +16,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { addToCart } from "@/redux/features/cart/cartSlice";
+import { useAppDispatch } from "@/redux/hook";
 import { TProduct } from "@/types";
 import { format } from "date-fns";
 import { Eye, Heart, ShoppingCart } from "lucide-react";
@@ -28,21 +30,34 @@ interface ProductCardProps {
 }
 
 const FeaturedProductCard = ({ product }: ProductCardProps) => {
+  const dispatch = useAppDispatch();
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
   };
+  //show toast when product added to cart
 
-  const handleAddToCart = () => {};
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        product: product._id,
+        title: product.title,
+        price: product.price,
+        quantity: 1,
+        stock: product.quantity,
+        coverImage: product.coverImage,
+      })
+    );
+  };
 
   return (
-    <Card className="w-full h-[350px] max-w-xs mx-auto overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow duration-300 hover:shadow-md">
-      <CardHeader className="p-0 relative">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl cursor-pointer h-[340px] max-w-xs mx-auto flex flex-col group border bg-card rounded-lg">
+      <CardHeader className="p-0 relative overflow-hidden">
         <img
           src={product.coverImage || "/placeholder.svg"}
           alt={product.title}
-          className="w-full h-40 object-cover"
+          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <Badge
           variant="default"
@@ -59,19 +74,31 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
         )}
       </CardHeader>
 
-      <CardContent className="p-4">
-        <CardTitle className="text-sm sm:text-base font-semibold leading-tight text-primary">
+      <CardContent className="flex flex-col p-4 flex-grow">
+        <CardTitle className="text-sm font-semibold mb-1 line-clamp-2 text-primary">
           {product.title}
         </CardTitle>
-        <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-1">
-          {product.author || "Unknown Author"}
+        <CardDescription className="text-xs flex justify-between items-center mt-1 text-muted-foreground">
+          <p className="line-clamp-1">{product.author || "Unknown Author"}</p>
+          <Button
+            onClick={handleLike}
+            variant="ghost"
+            size="icon"
+            className={`p-1 rounded-full transition-colors ${
+              isLiked
+                ? "text-red-500 hover:text-red-600"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
+          </Button>
         </CardDescription>
-        <div className="mt-3 flex items-center justify-between">
-          <p className="text-sm sm:text-base font-semibold text-primary">
+        <div className="mt-2 flex items-center justify-between">
+          <p className="text-sm font-semibold text-primary">
             ৳ {product.price.toFixed(2)}
           </p>
           <p
-            className={`text-xs sm:text-sm font-medium ${
+            className={`text-xs font-medium ${
               product.inStock ? "text-success" : "text-destructive"
             }`}
           >
@@ -80,12 +107,12 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 flex justify-between items-center">
+      <CardFooter className="p-4 flex justify-between items-center gap-2">
         <div className="flex items-center space-x-3">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="icon" className="p-1 sm:p-2">
-                <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Button variant="outline" size="icon" className="p-1">
+                <Eye className="h-4 w-4" />
               </Button>
             </DialogTrigger>
             <DialogContent className="w-[300px] rounded-lg bg-card">
@@ -123,30 +150,15 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-
-          <Button
-            onClick={handleLike}
-            variant="outline"
-            size="icon"
-            className={`p-1 sm:p-2 rounded-full ${
-              isLiked ? "bg-accent" : "bg-card"
-            } transition-colors`}
-          >
-            <Heart
-              className={`h-4 w-4 sm:h-5 sm:w-5 ${
-                isLiked ? "text-destructive" : "text-muted-foreground"
-              }`}
-            />
-          </Button>
         </div>
         <Button
           variant="default"
-          onClick={handleAddToCart}
+          onClick={() => handleAddToCart()}
           disabled={!product.inStock}
-          className="p-1 text-xs sm:p-2 md:p-3"
+          className="p-1 text-xs"
         >
-          <ShoppingCart className="text-sm sm:text-base md:text-lg" />
-          <span className=" text-xs">Add to Cart</span>
+          <ShoppingCart className="text-sm" />
+          <span className="text-xs">Add to Cart</span>
         </Button>
       </CardFooter>
     </Card>

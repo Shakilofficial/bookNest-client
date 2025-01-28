@@ -8,7 +8,7 @@ interface ContainerProps {
 
 const Container = ({ children, className, ...props }: ContainerProps) => {
   return (
-    <section className={cn("py-16 md:py-24", className)} {...props}>
+    <section className={cn("py-10 md:py-16", className)} {...props}>
       <div className="container px-4 md:px-6">{children}</div>
     </section>
   );
