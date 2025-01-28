@@ -1,6 +1,7 @@
-import AllBooks from "@/pages/AllBooks";
+import AllProducts from "@/pages/AllProducts";
 import Contact from "@/pages/Contact";
 import Home from "@/pages/Home";
+import ProductDetails from "@/pages/ProductDetails";
 
 export const PublicPaths = [
   {
@@ -9,9 +10,14 @@ export const PublicPaths = [
     element: <Home />,
   },
   {
-    name: "allBooks",
-    path: "/all-books",
-    element: <AllBooks />,
+    name: "allproducts",
+    path: "/all-products",
+    element: <AllProducts />,
+  },
+  {
+    name: "product",
+    path: "/product/:id",
+    element: <ProductDetails />,
   },
   {
     name: "contact",

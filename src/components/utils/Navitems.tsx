@@ -8,7 +8,7 @@ interface NavItemsProps {
 
 const navItems = [
   { label: "Home", path: "/", icon: Home },
-  { label: "All Books", path: "/all-books", icon: BookOpenIcon },
+  { label: "All Books", path: "/all-products", icon: BookOpenIcon },
   { label: "Contact", path: "/contact", icon: Mail },
 ];
 

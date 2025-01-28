@@ -10,11 +10,12 @@ import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import type { TProduct } from "@/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import ProductCard from "../product/ProductCard";
+
+import FeaturedProductCard from "../product/FeaturedProductCard";
 import { RainbowButton } from "../ui/rainbow-button";
 import SectionHeader from "../utils/SectionHeader";
 
-const FeaturedBooks = () => {
+const FeaturedProducts = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
 
   const { data, error, isLoading, isFetching } = useGetAllProductsQuery([
@@ -55,10 +56,10 @@ const FeaturedBooks = () => {
             {products.map((product) => (
               <CarouselItem
                 key={product._id}
-                className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 hover:scale-105 transition-all duration-300"
+                className="flex-shrink-0 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 hover:scale-105 transition-transform duration-300 ease-in-out"
               >
-                <div className="p-1">
-                  <ProductCard product={product} />
+                <div className="p-2">
+                  <FeaturedProductCard product={product} />
                 </div>
               </CarouselItem>
             ))}
@@ -67,7 +68,7 @@ const FeaturedBooks = () => {
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 rounded-full bg-white hover:bg-gray-200 transition-all duration-300"
+              className="h-8 w-8 rounded-full transition-all duration-300"
               aria-label="Previous slide"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -77,7 +78,7 @@ const FeaturedBooks = () => {
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 rounded-full bg-white hover:bg-gray-200 transition-all duration-300"
+              className="h-8 w-8 rounded-full transition-all duration-300"
               aria-label="Next slide"
             >
               <ChevronRight className="h-4 w-4" />
@@ -106,4 +107,4 @@ const ErrorState = () => (
   </section>
 );
 
-export default FeaturedBooks;
+export default FeaturedProducts;

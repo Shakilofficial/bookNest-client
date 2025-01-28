@@ -1,5 +1,10 @@
 export type TReview = {
-  user: string;
+  _id: string;
+  user?: {
+    _id: string;
+    name: string;
+    profileImg: string;
+  };
   product: string;
   rating: number;
   comment?: string;

@@ -8,7 +8,7 @@ import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import type { TQueryParam } from "@/types";
 import { useCallback, useState } from "react";
 
-const AllBooks = () => {
+const AllProducts = () => {
   const [queryParams, setQueryParams] = useState<TQueryParam[]>([
     { name: "page", value: "1" },
     { name: "limit", value: "10" },
@@ -75,7 +75,7 @@ const AllBooks = () => {
           {isFetching ? (
             <div>Updating...</div>
           ) : (
-            <ProductList books={data?.data || []} />
+            <ProductList products={data?.data || []} />
           )}
           <Pagination
             currentPage={Number(
@@ -93,4 +93,4 @@ const AllBooks = () => {
   );
 };
 
-export default AllBooks;
+export default AllProducts;

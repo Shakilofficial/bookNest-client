@@ -1,5 +1,5 @@
 import Categories from "@/components/main/Categories";
-import FeaturedBooks from "@/components/main/FeaturedBooks";
+import FeaturedProducts from "@/components/main/FeaturedProducts";
 import Hero from "@/components/main/Hero";
 import Container from "@/components/utils/Container";
 
@@ -8,7 +8,7 @@ const Home = () => {
     <div>
       <Hero />
       <Container>
-        <FeaturedBooks />
+        <FeaturedProducts />
         <Categories />
       </Container>
     </div>
