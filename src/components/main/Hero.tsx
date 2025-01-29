@@ -1,12 +1,12 @@
+import cover1 from "@/assets/images/cover-4.jpg";
+import cover2 from "@/assets/images/wcu-1.jpg";
+import cover3 from "@/assets/images/wcu-2.jpg";
+import cover4 from "@/assets/images/wcu-3.jpg";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-
-import cover1 from "@/assets/images/cover-1.jpg";
-import cover2 from "@/assets/images/cover-2.jpg";
-import cover3 from "@/assets/images/cover-3.png";
-import cover4 from "@/assets/images/cover-4.jpg";
+import { Link } from "react-router-dom";
 import { RainbowButton } from "../ui/rainbow-button";
 
 const slides = [
@@ -91,9 +91,11 @@ const Hero = () => {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <RainbowButton className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold mt-6">
-                    Explore Books
-                  </RainbowButton>
+                  <Link to="/all-products">
+                    <RainbowButton className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold mt-6">
+                      Explore Books
+                    </RainbowButton>
+                  </Link>
                 </motion.div>
               </div>
             </div>

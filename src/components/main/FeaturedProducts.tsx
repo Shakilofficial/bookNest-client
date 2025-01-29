@@ -10,7 +10,7 @@ import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import type { TProduct } from "@/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
 import FeaturedProductCard from "../product/FeaturedProductCard";
 import { RainbowButton } from "../ui/rainbow-button";
 import SectionHeader from "../utils/SectionHeader";
@@ -86,7 +86,11 @@ const FeaturedProducts = () => {
           </CarouselNext>
         </Carousel>
         <div className="text-center mt-8">
-          <RainbowButton>View All Books</RainbowButton>
+          <Link to="/all-products">
+            <RainbowButton className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+              Explore All Products
+            </RainbowButton>
+          </Link>
         </div>
       </div>
     </section>

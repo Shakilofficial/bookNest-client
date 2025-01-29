@@ -16,8 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import Container from "@/components/utils/Container";
+import SectionHeader from "@/components/utils/SectionHeader";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Book, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -58,12 +60,8 @@ const Contact = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 flex items-center gap-2">
-        <Book className="h-8 w-8" />
-        Contact Bookworm's Haven
-      </h1>
-
+    <Container className="container mx-auto px-4 py-8">
+      <SectionHeader highlight="Contact" subtitle="Get in touch with us" />
       <div className="grid md:grid-cols-2 gap-8">
         <Card>
           <CardHeader>
@@ -174,7 +172,7 @@ const Contact = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </Container>
   );
 };
 
