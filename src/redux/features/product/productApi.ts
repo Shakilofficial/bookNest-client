@@ -3,29 +3,24 @@ import { TProduct, TQueryParam, TResponseRedux } from "@/types";
 
 const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Get all products with optional query parameters
     getAllProducts: builder.query({
-      query: (args) => {
+      query: (args?: TQueryParam[]) => {
         const params = new URLSearchParams();
-
-        if (args) {
-          args.forEach((item: TQueryParam) => {
-            params.append(item.name, item.value as string);
-          });
-        }
+        args?.forEach((item) => params.append(item.name, String(item.value)));
 
         return {
-          url: "/products",
+          url: `/products?${params.toString()}`,
           method: "GET",
-          params: params,
         };
       },
-      transformResponse: (response: TResponseRedux<TProduct[]>) => {
-        return {
-          data: response.data,
-          meta: response.meta,
-        };
-      },
+      transformResponse: (response: TResponseRedux<TProduct[]>) => ({
+        data: response.data,
+        meta: response.meta,
+      }),
+      providesTags: ["Product"],
     }),
+
     // Fetch a single product by ID
     getSingleProduct: builder.query({
       query: (id: string) => ({
@@ -33,14 +28,17 @@ const productApi = baseApi.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+      providesTags: ["Product"],
     }),
 
     // Create a new product
     createProduct: builder.mutation({
-      query: ({ payload, file }: { payload: TProduct; file: File }) => {
+      query: ({ payload, file }: { payload: TProduct; file?: File }) => {
         const formData = new FormData();
-        formData.append("coverImage", file);
         formData.append("data", JSON.stringify(payload));
+        if (file) {
+          formData.append("coverImage", file);
+        }
 
         return {
           url: "/products",
@@ -48,7 +46,7 @@ const productApi = baseApi.injectEndpoints({
           body: formData,
         };
       },
-      transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+      invalidatesTags: ["Product"],
     }),
 
     // Update a product by ID
@@ -59,7 +57,7 @@ const productApi = baseApi.injectEndpoints({
         file,
       }: {
         id: string;
-        payload: TProduct;
+        payload: Partial<TProduct>;
         file?: File;
       }) => {
         const formData = new FormData();
@@ -74,7 +72,7 @@ const productApi = baseApi.injectEndpoints({
           body: formData,
         };
       },
-      transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+      invalidatesTags: ["Product"],
     }),
 
     // Delete a product by ID
@@ -83,14 +81,14 @@ const productApi = baseApi.injectEndpoints({
         url: `/products/${id}`,
         method: "DELETE",
       }),
-      transformResponse: (response: TResponseRedux<TProduct>) => response.data,
+      invalidatesTags: ["Product"],
     }),
   }),
 });
 
 export const {
-  useGetSingleProductQuery,
   useGetAllProductsQuery,
+  useGetSingleProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

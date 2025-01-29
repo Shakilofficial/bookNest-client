@@ -8,6 +8,7 @@ export type TProduct = {
   coverImage: string;
   quantity: number;
   inStock: boolean;
+  createdAt: string;
   updatedAt: string;
   isDeleted: boolean;
   publishedAt: string;

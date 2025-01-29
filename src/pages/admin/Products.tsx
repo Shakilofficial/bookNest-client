@@ -1,14 +1,7 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Pagination,
   PaginationContent,
@@ -18,13 +11,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -32,93 +18,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
+import SectionHeader from "@/components/utils/SectionHeader";
 import {
-  useCreateProductMutation,
   useDeleteProductMutation,
   useGetAllProductsQuery,
-  useUpdateProductMutation,
 } from "@/redux/features/product/productApi";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpDown, Edit, Plus, Trash2 } from "lucide-react";
-import type React from "react";
+import { TProduct } from "@/types";
+import {
+  ArrowUpDown,
+  PenBoxIcon,
+  PlusIcon,
+  ToggleRightIcon,
+} from "lucide-react";
 import { useCallback, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
-
-// Assuming these are your product categories
-const productCategories = [
-  "Fiction",
-  "Non-Fiction",
-  "Science",
-  "History",
-  "Biography",
-];
-
-const productSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  author: z.string().min(1, "Author is required"),
-  price: z.number().min(0, "Price must be a positive number"),
-  category: z.enum(productCategories as [string, ...string[]], {
-    errorMap: () => ({ message: "Please select a valid category" }),
-  }),
-  description: z.string().min(1, "Description is required"),
-  quantity: z.number().int().min(0, "Quantity must be a non-negative integer"),
-  coverImage: z.instanceof(File).optional(),
-});
-
-type ProductFormValues = z.infer<typeof productSchema>;
 
 type TQueryParam = {
   name: string;
   value: string;
 };
 
-type TProduct = {
-  _id: string;
-  title: string;
-  author: string;
-  price: number;
-  category: string;
-  description: string;
-  quantity: number;
-  coverImage?: string;
-};
-
-const Products: React.FC = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
+const Products = () => {
   const [queryParams, setQueryParams] = useState<TQueryParam[]>([
     { name: "page", value: "1" },
     { name: "limit", value: "10" },
   ]);
 
   const { data, error, isLoading } = useGetAllProductsQuery(queryParams);
-  const [createProduct] = useCreateProductMutation();
-  const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
 
-  const products = data?.data || [];
+  const products: TProduct[] = data?.data || [];
   const totalPages = data?.meta?.totalPage || 1;
-
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
-    defaultValues: {
-      title: "",
-      author: "",
-      price: 0,
-      category: productCategories[0],
-      description: "",
-      quantity: 0,
-    },
-  });
 
   const updateQueryParams = useCallback((newParams: TQueryParam[]) => {
     setQueryParams((prev) => {
@@ -165,43 +95,6 @@ const Products: React.FC = () => {
     [updateQueryParams]
   );
 
-  const onSubmit = async (data: ProductFormValues) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === "coverImage" && value instanceof File) {
-        formData.append("coverImage", value);
-      } else {
-        formData.append(key, value.toString());
-      }
-    });
-
-    try {
-      if (selectedProduct) {
-        await updateProduct({
-          id: selectedProduct._id,
-          payload: formData,
-          file: data.coverImage,
-        }).unwrap();
-        toast.success("Product updated successfully.");
-      } else {
-        await createProduct({
-          payload: formData,
-          file: data.coverImage,
-        }).unwrap();
-        toast.success("Product created successfully.");
-      }
-      setIsDialogOpen(false);
-      reset();
-    } catch (error) {
-      console.error("Failed to save product:", error);
-      toast.error(
-        `Failed to ${
-          selectedProduct ? "update" : "create"
-        } product. Please try again.`
-      );
-    }
-  };
-
   const handleDeleteProduct = async (id: string) => {
     try {
       await deleteProduct(id).unwrap();
@@ -223,178 +116,22 @@ const Products: React.FC = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">Products</CardTitle>
-      </CardHeader>
+      <SectionHeader
+        className="pt-6"
+        highlight="Products"
+        subtitle="Manage your products here"
+      />
       <CardContent>
         <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2">
-            <Input
-              placeholder="Search products..."
-              onChange={(e) => handleSearch(e.target.value)}
-              className="max-w-sm"
-            />
-          </div>
-          <Dialog
-            open={isDialogOpen}
-            onOpenChange={(open) => {
-              setIsDialogOpen(open);
-              if (!open) {
-                setSelectedProduct(null);
-                reset();
-              }
-            }}
-          >
-            <DialogTrigger asChild>
-              <Button onClick={() => setSelectedProduct(null)}>
-                <Plus className="mr-2 h-4 w-4" /> Add Product
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>
-                  {selectedProduct ? "Edit Product" : "Add New Product"}
-                </DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="title" className="text-right">
-                      Title
-                    </Label>
-                    <Input
-                      id="title"
-                      {...register("title")}
-                      defaultValue={selectedProduct?.title}
-                      className="col-span-3"
-                    />
-                    {errors.title && (
-                      <p className="text-red-500 col-span-3 col-start-2">
-                        {errors.title.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="author" className="text-right">
-                      Author
-                    </Label>
-                    <Input
-                      id="author"
-                      {...register("author")}
-                      defaultValue={selectedProduct?.author}
-                      className="col-span-3"
-                    />
-                    {errors.author && (
-                      <p className="text-red-500 col-span-3 col-start-2">
-                        {errors.author.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="price" className="text-right">
-                      Price
-                    </Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      step="0.01"
-                      {...register("price", { valueAsNumber: true })}
-                      defaultValue={selectedProduct?.price}
-                      className="col-span-3"
-                    />
-                    {errors.price && (
-                      <p className="text-red-500 col-span-3 col-start-2">
-                        {errors.price.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="category" className="text-right">
-                      Category
-                    </Label>
-                    <Controller
-                      name="category"
-                      control={control}
-                      defaultValue={
-                        selectedProduct?.category || productCategories[0]
-                      }
-                      render={({ field }) => (
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="col-span-3">
-                            <SelectValue placeholder="Select a category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {productCategories.map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
-                    {errors.category && (
-                      <p className="text-red-500 col-span-3 col-start-2">
-                        {errors.category.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="description" className="text-right">
-                      Description
-                    </Label>
-                    <Textarea
-                      id="description"
-                      {...register("description")}
-                      defaultValue={selectedProduct?.description}
-                      className="col-span-3"
-                    />
-                    {errors.description && (
-                      <p className="text-red-500 col-span-3 col-start-2">
-                        {errors.description.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="quantity" className="text-right">
-                      Quantity
-                    </Label>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      {...register("quantity", { valueAsNumber: true })}
-                      defaultValue={selectedProduct?.quantity}
-                      className="col-span-3"
-                    />
-                    {errors.quantity && (
-                      <p className="text-red-500 col-span-3 col-start-2">
-                        {errors.quantity.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="coverImage" className="text-right">
-                      Cover Image
-                    </Label>
-                    <Input
-                      id="coverImage"
-                      type="file"
-                      {...register("coverImage")}
-                      className="col-span-3"
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <Button type="submit">
-                    {selectedProduct ? "Save changes" : "Add product"}
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <Input
+            placeholder="Search products..."
+            onChange={(e) => handleSearch(e.target.value)}
+            className="max-w-sm"
+          />
+          <Button variant="default" className="ml-2">
+            <PlusIcon className="h-4 w-4" />
+            Add Product
+          </Button>
         </div>
         <Table>
           <TableHeader>
@@ -418,14 +155,15 @@ const Products: React.FC = () => {
               <TableHead>Category</TableHead>
               <TableHead>
                 <Button variant="ghost" onClick={() => handleSort("quantity")}>
-                  Quantity <ArrowUpDown className="ml-2 h-4 w-4" />
+                  Qnt <ArrowUpDown className="ml-2 h-4 w-4" size={16} />
                 </Button>
               </TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {products.map((product: TProduct) => (
               <TableRow key={product._id}>
                 <TableCell>
                   <img
@@ -438,26 +176,26 @@ const Products: React.FC = () => {
                 <TableCell>{product.author}</TableCell>
                 <TableCell>${product.price.toFixed(2)}</TableCell>
                 <TableCell>{product.category}</TableCell>
-                <TableCell>{product.quantity}</TableCell>
+                <TableCell className="text-center">
+                  {product.quantity}
+                </TableCell>
                 <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedProduct(product);
-                      setIsDialogOpen(true);
-                    }}
+                  <Badge
+                    variant={product.isDeleted ? "destructive" : "default"}
                   >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
+                    {product.isDeleted ? "Deleted" : "Active"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="flex justify-between items-center gap-1 mt-3">
+                  <Button variant="secondary" size="sm">
+                    <PenBoxIcon className="h-4 w-4 mr-2" />
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="sm"
                     onClick={() => handleDeleteProduct(product._id)}
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    <ToggleRightIcon className="h-4 w-4 mr-2" />
                   </Button>
                 </TableCell>
               </TableRow>

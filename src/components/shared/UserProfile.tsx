@@ -318,7 +318,7 @@ const UserProfile = () => {
                       <Button
                         type="submit"
                         disabled={isUpdating}
-                        variant="primary"
+                        variant="default"
                       >
                         {isUpdating ? "Updating..." : "Update"}
                       </Button>

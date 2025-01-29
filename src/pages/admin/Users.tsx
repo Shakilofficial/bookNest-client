@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,12 +24,12 @@ import {
   useBlockUserMutation,
   useGetAllUsersQuery,
 } from "@/redux/features/user/userApi";
+import { TFUser } from "@/types";
 import { ArrowUpDown } from "lucide-react";
-import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const Users: React.FC = () => {
+const Users = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [sortBy, setSortBy] = useState("createdAt");
@@ -44,7 +45,7 @@ const Users: React.FC = () => {
   });
   const [blockUser] = useBlockUserMutation();
 
-  const users = data?.data || [];
+  const users: TFUser[] = data?.data || [];
   const totalPages = data?.meta?.totalPage || 1;
 
   const handleSort = (field: string) => {

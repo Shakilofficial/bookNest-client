@@ -84,7 +84,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  tagTypes: ["User", "Products", "Reviews", "Orders", "UserOrders"],
+  tagTypes: ["User", "Product", "Reviews", "Orders", "UserOrders"],
   baseQuery: baseQueryWithRefreshToken,
   endpoints: () => ({}),
 });

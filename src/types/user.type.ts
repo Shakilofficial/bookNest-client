@@ -12,6 +12,7 @@ export type TFUser = {
   city: string;
   passwordChangedAt: Date;
   wishlist: TProduct[];
+  isBlocked: boolean;
   createdAt: Date;
   updatedAt: Date;
 };
