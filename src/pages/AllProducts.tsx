@@ -62,7 +62,7 @@ const AllProducts = () => {
     [updateQueryParams]
   );
 
-  if (isLoading)
+  if (isLoading || isFetching)
     return (
       <div>
         <GridSkeleton />

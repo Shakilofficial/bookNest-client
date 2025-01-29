@@ -35,6 +35,7 @@ const ProductDetails = () => {
   const {
     data: product,
     isLoading: productLoading,
+    isFetching,
     error: productError,
   } = useGetSingleProductQuery(id!);
   const {
@@ -86,7 +87,7 @@ const ProductDetails = () => {
     }
   };
 
-  if (productLoading)
+  if (isFetching||productLoading )
     return (
       <div>
         <CardSkeleton />

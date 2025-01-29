@@ -42,7 +42,8 @@ const Products = () => {
     { name: "limit", value: "10" },
   ]);
 
-  const { data, error, isLoading } = useGetAllProductsQuery(queryParams);
+  const { data, error, isLoading, isFetching } =
+    useGetAllProductsQuery(queryParams);
   const [deleteProduct] = useDeleteProductMutation();
 
   const products: TProduct[] = data?.data || [];
@@ -103,19 +104,22 @@ const Products = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>
-      <GridSkeleton />
-      <GridSkeleton />
-      <GridSkeleton />
-    </div>;
+  if (isLoading || isFetching) {
+    return (
+      <div>
+        <GridSkeleton />
+        <GridSkeleton />
+        <GridSkeleton />
+      </div>
+    );
   }
 
   if (error) {
-    
-    return <div>
-      <Error />
-    </div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   return (

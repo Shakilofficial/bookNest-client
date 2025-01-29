@@ -24,7 +24,7 @@ import GridSkeleton from "../skeleton/GridSkeleton";
 const TopSellingProducts = () => {
   const [timeRange, setTimeRange] = useState("7");
 
-  const { data, isLoading, error } = useFetchAllOrdersQuery({
+  const { data, isLoading, isFetching, error } = useFetchAllOrdersQuery({
     page: 1,
     limit: 1000,
     sortBy: "createdAt",
@@ -72,7 +72,7 @@ const TopSellingProducts = () => {
       }));
   }, [orders, timeRange]);
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <Card className="h-full flex justify-center items-center">
         <GridSkeleton />

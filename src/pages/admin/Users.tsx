@@ -39,7 +39,7 @@ const Users = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [search, setSearch] = useState("");
 
-  const { isLoading, data, error } = useGetAllUsersQuery({
+  const { isLoading,isFetching, data, error } = useGetAllUsersQuery({
     page,
     limit,
     sortBy,
@@ -73,7 +73,7 @@ const Users = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div>
         <GridSkeleton />

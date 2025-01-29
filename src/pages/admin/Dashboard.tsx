@@ -2,6 +2,8 @@ import DashboardCard from "@/components/dashboard/DashboardCard";
 import RecentOrders from "@/components/dashboard/RecentOrders";
 import TopSellingProducts from "@/components/dashboard/TopSellingProducts";
 import TotalRevenue from "@/components/dashboard/TotalRevenue";
+import Error from "@/components/skeleton/Error";
+import Skeleton from "@/components/skeleton/Skeleton";
 import SectionHeader from "@/components/utils/SectionHeader";
 import { useFetchAllOrdersQuery } from "@/redux/features/order/orderApi";
 import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
@@ -25,11 +27,33 @@ const Dashboard = () => {
   });
   const orders: TOrder[] = ordersData?.data || [];
 
-  const { data: usersData, isLoading: usersLoading } =
-    useGetAllUsersQuery(undefined);
-  const { data: productsData, isLoading: productsLoading } =
-    useGetAllProductsQuery(undefined);
+  const {
+    data: usersData,
+    isLoading: usersLoading,
+    isFetching,
+    error,
+  } = useGetAllUsersQuery(undefined);
+  const {
+    data: productsData,
+    isLoading: productsLoading,
+    isFetching: productsFetching,
+    error: productsError,
+  } = useGetAllProductsQuery(undefined);
 
+  if (isFetching || usersLoading || productsFetching) {
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    );
+  }
+  if (error || productsError) {
+    return (
+      <div>
+        <Error />
+      </div>
+    );
+  }
   const totalOrders = orders.length;
   const totalCustomers = new Set(orders.map((order) => order.user._id)).size;
   const totalRevenue = orders.reduce((sum, order) => sum + order.totalPrice, 0);

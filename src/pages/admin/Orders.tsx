@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import CardSkeleton from "@/components/skeleton/CardSkeleton";
 import Error from "@/components/skeleton/Error";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +40,7 @@ const Orders = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [search, setSearch] = useState("");
 
-  const { isLoading, data, error } = useFetchAllOrdersQuery({
+  const { isLoading, isFetching, data, error } = useFetchAllOrdersQuery({
     page,
     limit,
     sortBy,
@@ -72,7 +71,7 @@ const Orders = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div>
         <CardSkeleton />

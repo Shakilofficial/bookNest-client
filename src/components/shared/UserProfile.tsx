@@ -59,7 +59,9 @@ const UserProfile = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { data, isLoading, error } = useGetUserQuery(token ? { token } : null);
+  const { data, isLoading, isFetching, error } = useGetUserQuery(
+    token ? { token } : null
+  );
   const user = data?.data;
 
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
@@ -100,7 +102,7 @@ const UserProfile = () => {
     navigate("/auth/login");
   };
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <AvatarSkeleton />;
   }
 

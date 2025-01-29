@@ -35,12 +35,15 @@ import { Link } from "react-router-dom";
 const Order = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  const { isLoading, data } = useFetchUserOrdersQuery({ page, limit });
+  const { isLoading, isFetching, data } = useFetchUserOrdersQuery({
+    page,
+    limit,
+  });
 
   const orders = data?.data || [];
   const totalPages = data?.meta?.totalPage || 1;
 
-  if (isLoading) {
+  if (isFetching || isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <GridSkeleton />

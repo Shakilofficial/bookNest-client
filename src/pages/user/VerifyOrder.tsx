@@ -18,13 +18,13 @@ const VerifyOrder = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
 
-  const { isLoading, data } = useVerifyPaymentQuery(orderId, {
+  const { isFetching, isLoading, data } = useVerifyPaymentQuery(orderId, {
     refetchOnMountOrArgChange: true,
   });
 
   const orderData = data?.data?.[0];
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="container mx-auto p-4">
         <GridSkeleton />
