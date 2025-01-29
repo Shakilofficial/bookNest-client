@@ -21,7 +21,7 @@ interface IErrorResponse {
   data: ErrorData;
 }
 
-const API_BASE_URL = "https://booknest-server-teal.vercel.app/api/v1";
+const API_BASE_URL = "http://localhost:5000/api/v1";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -53,7 +53,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
     if (error.status === 401) {
       const res = await fetch(
-        "https://booknest-server-teal.vercel.app/api/v1/auth/refresh-token",
+        "http://localhost:5000/api/v1/auth/refresh-token",
         {
           method: "POST",
           credentials: "include",

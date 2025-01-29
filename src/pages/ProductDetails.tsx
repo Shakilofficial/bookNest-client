@@ -4,7 +4,6 @@ import ReviewForm from "@/components/product/ReviewForm";
 import ReviewList from "@/components/product/ReviewList";
 import CardSkeleton from "@/components/skeleton/CardSkeleton";
 import Error from "@/components/skeleton/Error";
-import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,21 +31,25 @@ import { toast } from "sonner";
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
   const currentUser = useAppSelector(selectCurrentUser);
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
+
   const {
     data: product,
     isLoading: productLoading,
-    isFetching,
+    isFetching: productFetching,
     error: productError,
   } = useGetSingleProductQuery(id!);
+
   const {
     data: reviews,
     isLoading: reviewsLoading,
+    isFetching: reviewsFetching,
     error: reviewsError,
   } = useFetchProductReviewsQuery(id!);
+
   const [createReview] = useCreateReviewMutation();
   const [updateReview] = useUpdateReviewMutation();
   const [deleteReview] = useDeleteReviewMutation();
-  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
   const handleAddReview = async (reviewData: {
     rating: number;
@@ -62,7 +65,7 @@ const ProductDetails = () => {
       setIsReviewDialogOpen(false);
       toast.success("Review submitted successfully");
     } catch (error) {
-      toast.error("Failed to submit review");
+      toast.error("Failed to submit review. Please try again later.");
     }
   };
 
@@ -74,7 +77,7 @@ const ProductDetails = () => {
       await updateReview({ reviewId, reviewData }).unwrap();
       toast.success("Review updated successfully");
     } catch (error) {
-      toast.error("Failed to update review");
+      toast.error("Failed to update review. Please try again later.");
     }
   };
 
@@ -83,29 +86,25 @@ const ProductDetails = () => {
       await deleteReview(reviewId).unwrap();
       toast.success("Review deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete review");
+      toast.error("Failed to delete review. Please try again later.");
     }
   };
 
-  if (isFetching||productLoading )
+  if (productLoading || productFetching) {
     return (
-      <div>
+      <Container className="max-w-7xl mx-auto">
         <CardSkeleton />
-        <GridSkeleton />
-      </div>
+      </Container>
     );
-  if (productError)
+  }
+
+  if (productError || !product) {
     return (
-      <div>
-        <Error />
-      </div>
+      <Container className="max-w-7xl mx-auto">
+        <Error message="Failed to load product details. Please try again later." />
+      </Container>
     );
-  if (!product)
-    return (
-      <div>
-        <Error />
-      </div>
-    );
+  }
 
   return (
     <Container className="max-w-7xl mx-auto">
@@ -143,17 +142,21 @@ const ProductDetails = () => {
             </DialogContent>
           </Dialog>
         </div>
-        {reviewsLoading ? (
-          <div>Loading reviews...</div>
+        {reviewsLoading || reviewsFetching ? (
+          <div className="text-center py-4">Loading reviews...</div>
         ) : reviewsError ? (
-          <div>Error loading reviews</div>
-        ) : (
+          <Error message="Failed to load reviews. Please try again later." />
+        ) : reviews?.data && reviews.data.length > 0 ? (
           <ReviewList
-            reviews={reviews?.data || []}
+            reviews={reviews.data}
             currentUser={currentUser}
             onUpdateReview={handleUpdateReview}
             onDeleteReview={handleDeleteReview}
           />
+        ) : (
+          <div className="text-center py-4 text-gray-500">
+            No reviews yet. Be the first to review this product!
+          </div>
         )}
       </div>
     </Container>

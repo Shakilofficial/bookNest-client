@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import {
   Accordion,
   AccordionContent,
@@ -28,29 +26,31 @@ import {
 import Container from "@/components/utils/Container";
 import SectionHeader from "@/components/utils/SectionHeader";
 import { useFetchUserOrdersQuery } from "@/redux/features/order/orderApi";
-import { Calendar, CreditCard, Package, ShoppingBag } from "lucide-react";
+import { TOrder } from "@/types";
+import {
+  Calendar,
+  CreditCard,
+  Loader2,
+  Package,
+  ShoppingBag,
+} from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Order = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  const { isLoading, isFetching, data } = useFetchUserOrdersQuery({
-    page,
-    limit,
-  });
+  const { isLoading, data } = useFetchUserOrdersQuery({ page, limit });
+  const orders: TOrder[] = data?.data || [];
 
-  const orders = data?.data || [];
   const totalPages = data?.meta?.totalPage || 1;
-
-  if (isFetching || isLoading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <GridSkeleton />
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
-
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "paid":
@@ -61,7 +61,6 @@ const Order = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
-
   return (
     <Container className="max-w-5xl mx-auto">
       <Card>
@@ -76,8 +75,8 @@ const Order = () => {
         </CardHeader>
         <CardContent>
           <Accordion type="single" collapsible className="w-full">
-            {orders.map((order: any, index: any) => (
-              <AccordionItem value={`item-${index}`} key={order._id}>
+            {orders?.map((order, index) => (
+              <AccordionItem value={`item-${index}`} key={order?._id}>
                 <AccordionTrigger>
                   <div className="flex justify-between items-center w-full">
                     <div className="flex items-center gap-4">
@@ -146,7 +145,7 @@ const Order = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {order.products.map((item: any, productIndex: any) => (
+                        {order.products.map((item, productIndex) => (
                           <TableRow key={productIndex}>
                             <TableCell className="font-medium">
                               {item.product ? (
@@ -180,11 +179,19 @@ const Order = () => {
                     </Table>
                   </div>
                   <div className="mt-4 flex justify-end">
-                    <Link to={`/order/verify?order_id=${order.transaction.id}`}>
-                      <Button variant="outline" size="sm">
-                        View Full Details
-                      </Button>
-                    </Link>
+                    {order.transaction ? (
+                      <Link
+                        to={`/order/verify?order_id=${order.transaction.id}`}
+                      >
+                        <Button variant="outline" size="sm">
+                          View Full Details
+                        </Button>
+                      </Link>
+                    ) : (
+                      <p className="text-gray-500 text-sm">
+                        No transaction details available
+                      </p>
+                    )}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -221,5 +228,4 @@ const Order = () => {
     </Container>
   );
 };
-
 export default Order;

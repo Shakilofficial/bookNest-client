@@ -97,7 +97,7 @@ const Products = () => {
   const handleDeleteProduct = async (id: string) => {
     try {
       await deleteProduct(id).unwrap();
-      toast.success("Product deleted successfully.");
+      toast.success("Success");
     } catch (error) {
       console.error("Failed to delete product:", error);
       toast.error("Failed to delete product. Please try again.");

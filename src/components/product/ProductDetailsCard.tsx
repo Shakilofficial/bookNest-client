@@ -7,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { addToCart } from "@/redux/features/cart/cartSlice";
+import { useAppDispatch } from "@/redux/hook";
 import type { TProduct } from "@/types";
 import { ShoppingCart } from "lucide-react";
 
@@ -15,7 +17,19 @@ interface ProductDetailsCardProps {
 }
 
 const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
-  const handleAddToCart = () => {};
+  const dispatch = useAppDispatch();
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        product: product._id,
+        title: product.title,
+        price: product.price,
+        quantity: 1,
+        stock: product.quantity,
+        coverImage: product.coverImage,
+      })
+    );
+  };
 
   return (
     <Card className="overflow-hidden shadow-lg">
@@ -57,7 +71,7 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
           </CardContent>
           <CardFooter>
             <Button
-              onClick={handleAddToCart}
+              onClick={() => handleAddToCart()}
               disabled={!product.inStock}
               className="w-full md:w-auto"
             >
