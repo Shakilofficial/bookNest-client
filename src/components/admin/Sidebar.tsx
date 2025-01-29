@@ -8,6 +8,7 @@ import {
   Users,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import Logo from "../shared/Logo";
 import { Button } from "../ui/button";
 
 const sidebarItems = [
@@ -53,6 +54,9 @@ const Sidebar = () => {
           })}
         </div>
       </ScrollArea>
+      <div className="flex flex-col gap-2 p-4">
+        <Logo />
+      </div>
     </div>
   );
 };
