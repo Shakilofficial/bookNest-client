@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/redux/api/baseApi";
 import { TProduct, TQueryParam, TResponseRedux } from "@/types";
 
@@ -31,9 +32,8 @@ const productApi = baseApi.injectEndpoints({
       providesTags: ["Product"],
     }),
 
-    // Create a new product
     createProduct: builder.mutation({
-      query: ({ payload, file }: { payload: TProduct; file?: File }) => {
+      query: ({ payload, file }: { payload: any; file?: File }) => {
         const formData = new FormData();
         formData.append("data", JSON.stringify(payload));
         if (file) {
@@ -61,10 +61,10 @@ const productApi = baseApi.injectEndpoints({
         file?: File;
       }) => {
         const formData = new FormData();
+        formData.append("data", JSON.stringify(payload));
         if (file) {
           formData.append("coverImage", file);
         }
-        formData.append("data", JSON.stringify(payload));
 
         return {
           url: `/products/${id}`,

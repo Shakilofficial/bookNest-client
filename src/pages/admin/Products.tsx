@@ -1,3 +1,4 @@
+import AddProductDialog from "@/components/product/AddProductDialog";
 import Error from "@/components/skeleton/Error";
 import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +28,7 @@ import {
 } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types";
 
-import { ArrowUpDown, PenBoxIcon, PlusIcon } from "lucide-react";
+import { ArrowUpDown, PenBoxIcon } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -97,7 +98,7 @@ const Products = () => {
   const handleDeleteProduct = async (id: string) => {
     try {
       await deleteProduct(id).unwrap();
-      toast.success("Success");
+      toast.success("Product deleted successfully.");
     } catch (error) {
       console.error("Failed to delete product:", error);
       toast.error("Failed to delete product. Please try again.");
@@ -136,10 +137,7 @@ const Products = () => {
             onChange={(e) => handleSearch(e.target.value)}
             className="max-w-sm"
           />
-          <Button variant="default" className="ml-2">
-            <PlusIcon className="h-4 w-4" />
-            Add Product
-          </Button>
+          <AddProductDialog />
         </div>
         <Table>
           <TableHeader>
