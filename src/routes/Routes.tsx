@@ -6,6 +6,7 @@ import Orders from "@/pages/admin/Orders";
 import Products from "@/pages/admin/Products";
 import Settings from "@/pages/admin/Settings";
 import Users from "@/pages/admin/Users";
+import ErrorPage from "@/pages/ErrorPage";
 import { routeGenerator } from "@/utils/routeGenerator";
 import { createBrowserRouter } from "react-router-dom";
 import { authPaths } from "./AuthRoutes";
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
         element: <Settings />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <ErrorPage />,
   },
 ]);
 

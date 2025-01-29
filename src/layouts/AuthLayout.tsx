@@ -1,4 +1,5 @@
 import defaultBackgroundImage from "@/assets/images/auth-bg.png";
+import Logo from "@/components/shared/Logo";
 import { Outlet } from "react-router-dom";
 
 interface AuthLayoutProps {
@@ -19,10 +20,13 @@ const AuthLayout = ({ backgroundImage }: AuthLayoutProps) => {
         <div className="absolute inset-0 bg-black bg-opacity-70"></div>
 
         <div className="relative z-10 flex flex-col justify-between h-full px-16 py-12">
-          <div className="space-y-4">
-            <h1 className="text-5xl font-extrabold leading-tight text-white">
-              Welcome to <span className="text-primary">BookNest</span>
-            </h1>
+          <div>
+            <div className="flex flex-row items-center justify-center space-x-4">
+              <h1 className="text-5xl font-extrabold leading-tight text-white">
+                Welcome to
+              </h1>
+              <Logo />
+            </div>
             <p className="mt-4 text-lg text-muted-foreground">
               Experience a secure, fast, and user-friendly environment designed
               to help you succeed.
