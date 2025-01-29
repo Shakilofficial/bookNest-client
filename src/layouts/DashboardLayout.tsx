@@ -7,7 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import Dashboard from "@/pages/admin/Dashboard";
+
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
