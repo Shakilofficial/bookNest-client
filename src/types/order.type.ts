@@ -1,9 +1,4 @@
-export type TProduct = {
-  _id: string;
-  title: string;
-  price: number;
-  coverImage?: string;
-};
+import { TProduct } from "./product.type";
 
 export type TOrderProduct = {
   product: TProduct;
