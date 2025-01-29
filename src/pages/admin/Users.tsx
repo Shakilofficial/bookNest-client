@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import SectionHeader from "@/components/utils/SectionHeader";
 import {
   useBlockUserMutation,
   useGetAllUsersQuery,
@@ -81,9 +82,11 @@ const Users = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">Users</CardTitle>
-      </CardHeader>
+      <SectionHeader
+        className="pt-6"
+        highlight="All Users"
+        subtitle="Manage your users here"
+      />
       <CardContent>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">

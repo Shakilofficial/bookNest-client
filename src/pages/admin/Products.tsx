@@ -24,12 +24,7 @@ import {
   useGetAllProductsQuery,
 } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types";
-import {
-  ArrowUpDown,
-  PenBoxIcon,
-  PlusIcon,
-  ToggleRightIcon,
-} from "lucide-react";
+import { ArrowUpDown, PenBoxIcon, PlusIcon } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -191,11 +186,11 @@ const Products = () => {
                     <PenBoxIcon className="h-4 w-4 mr-2" />
                   </Button>
                   <Button
-                    variant="destructive"
+                    variant={product.isDeleted ? "ghost" : "destructive"}
                     size="sm"
                     onClick={() => handleDeleteProduct(product._id)}
                   >
-                    <ToggleRightIcon className="h-4 w-4 mr-2" />
+                    {product.isDeleted ? "Restore" : "Delete"}
                   </Button>
                 </TableCell>
               </TableRow>
