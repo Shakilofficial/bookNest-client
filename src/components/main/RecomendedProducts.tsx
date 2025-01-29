@@ -2,7 +2,8 @@ import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types";
 import { useEffect, useState } from "react";
 import ProductCard from "../product/ProductCard";
-import Skeleton from "../skeleton/Skeleton";
+import Error from "../skeleton/Error";
+import GridSkeleton from "../skeleton/GridSkeleton";
 import SectionHeader from "../utils/SectionHeader";
 
 const RecomendedProducts = () => {
@@ -20,11 +21,15 @@ const RecomendedProducts = () => {
   }, [data]);
 
   if (isLoading || isFetching) {
-    return <Skeleton />;
+    return <GridSkeleton />;
   }
 
   if (error) {
-    return <div>error</div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   return (

@@ -1,4 +1,4 @@
-import Skeleton from "@/components/skeleton/Skeleton";
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,19 +27,7 @@ const VerifyOrder = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6">Order Verification</h1>
-        <div className="grid gap-6 md:grid-cols-2">
-          {[...Array(4)].map((_, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <Skeleton className="h-6 w-1/3" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-24 w-full" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <GridSkeleton />
       </div>
     );
   }

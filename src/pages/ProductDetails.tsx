@@ -2,6 +2,9 @@
 import ProductDetailsCard from "@/components/product/ProductDetailsCard";
 import ReviewForm from "@/components/product/ReviewForm";
 import ReviewList from "@/components/product/ReviewList";
+import CardSkeleton from "@/components/skeleton/CardSkeleton";
+import Error from "@/components/skeleton/Error";
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -43,7 +46,6 @@ const ProductDetails = () => {
   const [updateReview] = useUpdateReviewMutation();
   const [deleteReview] = useDeleteReviewMutation();
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
-  const [editingReview, setEditingReview] = useState<string | null>(null);
 
   const handleAddReview = async (reviewData: {
     rating: number;
@@ -69,7 +71,6 @@ const ProductDetails = () => {
   ) => {
     try {
       await updateReview({ reviewId, reviewData }).unwrap();
-      setEditingReview(null);
       toast.success("Review updated successfully");
     } catch (error) {
       toast.error("Failed to update review");
@@ -85,16 +86,30 @@ const ProductDetails = () => {
     }
   };
 
-  if (productLoading) return <div>Loading product...</div>;
-  if (productError) return <div>Error loading product</div>;
-  if (!product) return <div>Product not found</div>;
+  if (productLoading)
+    return (
+      <div>
+        <CardSkeleton />
+        <GridSkeleton />
+      </div>
+    );
+  if (productError)
+    return (
+      <div>
+        <Error />
+      </div>
+    );
+  if (!product)
+    return (
+      <div>
+        <Error />
+      </div>
+    );
 
   return (
     <Container className="max-w-7xl mx-auto">
       <ProductDetailsCard product={product} />
-
       <Separator className="my-8" />
-
       <div className="mt-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Customer Reviews</h2>

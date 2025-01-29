@@ -11,9 +11,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Error from "../skeleton/Error";
+import GridSkeleton from "../skeleton/GridSkeleton";
 
 const TotalRevenue = () => {
-  const { data } = useFetchAllOrdersQuery({
+  const { data, isLoading, isFetching, error } = useFetchAllOrdersQuery({
     page: 1,
     limit: 1000,
     sortBy: "createdAt",
@@ -33,6 +35,20 @@ const TotalRevenue = () => {
     { name: "Jun", revenue: 5500 },
     { name: "Jul", revenue: totalRevenue },
   ];
+  if (isLoading || isFetching) {
+    return (
+      <Card className="h-full flex justify-center items-center">
+        <GridSkeleton />
+      </Card>
+    );
+  }
+  if (error) {
+    return (
+      <Card className="h-full flex justify-center items-center">
+        <Error />
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full">

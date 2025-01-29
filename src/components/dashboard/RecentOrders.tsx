@@ -4,14 +4,32 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFetchAllOrdersQuery } from "@/redux/features/order/orderApi";
 import type { TOrder } from "@/types";
 import { Package } from "lucide-react";
+import Error from "../skeleton/Error";
+import GridSkeleton from "../skeleton/GridSkeleton";
 
 const RecentOrders = () => {
-  const { data } = useFetchAllOrdersQuery({
+  const { data, isFetching, isLoading, error } = useFetchAllOrdersQuery({
     page: 1,
     limit: 5,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
+
+  if (isLoading || isFetching) {
+    return (
+      <div>
+        <GridSkeleton />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div>
+        <Error />
+      </div>
+    );
+  }
+
   const recentOrders: TOrder[] = data?.data || [];
 
   const getStatusColor = (status: string) => {

@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/select";
 import { useFetchAllOrdersQuery } from "@/redux/features/order/orderApi";
 import { TOrder } from "@/types";
-import { Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   Bar,
@@ -19,6 +18,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Error from "../skeleton/Error";
+import GridSkeleton from "../skeleton/GridSkeleton";
 
 const TopSellingProducts = () => {
   const [timeRange, setTimeRange] = useState("7");
@@ -74,7 +75,7 @@ const TopSellingProducts = () => {
   if (isLoading) {
     return (
       <Card className="h-full flex justify-center items-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <GridSkeleton />
       </Card>
     );
   }
@@ -82,9 +83,7 @@ const TopSellingProducts = () => {
   if (error) {
     return (
       <Card className="h-full flex justify-center items-center">
-        <p className="text-red-500 dark:text-red-400">
-          Error loading data. Please try again.
-        </p>
+        <Error />
       </Card>
     );
   }

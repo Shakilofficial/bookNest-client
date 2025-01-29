@@ -2,6 +2,8 @@ import Pagination from "@/components/product/Pagination";
 import ProductList from "@/components/product/ProductList";
 import SearchBar from "@/components/product/SearchBar";
 import SortDropdown from "@/components/product/SortDropdown";
+import Error from "@/components/skeleton/Error";
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import Container from "@/components/utils/Container";
 import SectionHeader from "@/components/utils/SectionHeader";
 import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
@@ -60,8 +62,20 @@ const AllProducts = () => {
     [updateQueryParams]
   );
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {JSON.stringify(error)}</div>;
+  if (isLoading)
+    return (
+      <div>
+        <GridSkeleton />
+        <GridSkeleton />
+        <GridSkeleton />
+      </div>
+    );
+  if (error)
+    return (
+      <div>
+        <Error />
+      </div>
+    );
 
   return (
     <Container>

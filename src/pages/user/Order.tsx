@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import {
   Accordion,
   AccordionContent,
@@ -26,19 +28,13 @@ import {
 import Container from "@/components/utils/Container";
 import SectionHeader from "@/components/utils/SectionHeader";
 import { useFetchUserOrdersQuery } from "@/redux/features/order/orderApi";
-import {
-  Calendar,
-  CreditCard,
-  Loader2,
-  Package,
-  ShoppingBag,
-} from "lucide-react";
+import { Calendar, CreditCard, Package, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Order = () => {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
   const { isLoading, data } = useFetchUserOrdersQuery({ page, limit });
 
   const orders = data?.data || [];
@@ -47,7 +43,7 @@ const Order = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <GridSkeleton />
       </div>
     );
   }
@@ -77,7 +73,7 @@ const Order = () => {
         </CardHeader>
         <CardContent>
           <Accordion type="single" collapsible className="w-full">
-            {orders.map((order, index) => (
+            {orders.map((order: any, index: any) => (
               <AccordionItem value={`item-${index}`} key={order._id}>
                 <AccordionTrigger>
                   <div className="flex justify-between items-center w-full">
@@ -147,7 +143,7 @@ const Order = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {order.products.map((item, productIndex) => (
+                        {order.products.map((item: any, productIndex: any) => (
                           <TableRow key={productIndex}>
                             <TableCell className="font-medium">
                               {item.product ? (

@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import Error from "@/components/skeleton/Error";
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,7 +34,7 @@ import { toast } from "sonner";
 
 const Users = () => {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [search, setSearch] = useState("");
@@ -72,12 +74,19 @@ const Users = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <GridSkeleton />
+      </div>
+    );
   }
 
   if (error) {
-    toast.error("Failed to fetch users. Please try again.");
-    return <div>Error loading users.</div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   return (

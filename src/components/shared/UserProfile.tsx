@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { logout } from "@/redux/features/auth/authSlice";
 import {
@@ -66,7 +67,6 @@ const UserProfile = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -91,7 +91,6 @@ const UserProfile = () => {
       toast.success("Profile updated successfully!");
       setIsDialogOpen(false);
     } catch (err) {
-      console.error("Failed to update profile:", err);
       toast.error("Failed to update profile.");
     }
   };

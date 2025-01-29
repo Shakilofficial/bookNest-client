@@ -12,6 +12,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FeaturedProductCard from "../product/FeaturedProductCard";
+import Error from "../skeleton/Error";
+import GridSkeleton from "../skeleton/GridSkeleton";
 import { RainbowButton } from "../ui/rainbow-button";
 import SectionHeader from "../utils/SectionHeader";
 
@@ -99,15 +101,13 @@ const FeaturedProducts = () => {
 
 const LoadingState = () => (
   <section className="flex justify-center items-center min-h-[200px]">
-    <p>Loading featured products...</p>
+    <GridSkeleton />
   </section>
 );
 
 const ErrorState = () => (
   <section className="flex justify-center items-center min-h-[200px]">
-    <p className="text-red-500">
-      Failed to load featured products. Please try again later.
-    </p>
+    <Error />
   </section>
 );
 

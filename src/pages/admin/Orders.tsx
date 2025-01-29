@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import CardSkeleton from "@/components/skeleton/CardSkeleton";
+import Error from "@/components/skeleton/Error";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,11 +33,10 @@ import { useFetchAllOrdersQuery } from "@/redux/features/order/orderApi";
 import type { TOrder } from "@/types";
 import { ArrowUpDown, Calendar, CreditCard, Eye } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 const Orders = () => {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [search, setSearch] = useState("");
@@ -72,12 +73,20 @@ const Orders = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <CardSkeleton />
+        <CardSkeleton />
+      </div>
+    );
   }
 
   if (error) {
-    toast.error("Failed to fetch orders. Please try again.");
-    return <div>Error loading orders.</div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   return (

@@ -1,3 +1,5 @@
+import Error from "@/components/skeleton/Error";
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -102,12 +104,18 @@ const Products = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>
+      <GridSkeleton />
+      <GridSkeleton />
+      <GridSkeleton />
+    </div>;
   }
 
   if (error) {
-    toast.error("Failed to fetch products. Please try again.");
-    return <div>Error loading products.</div>;
+    
+    return <div>
+      <Error />
+    </div>;
   }
 
   return (
