@@ -1,4 +1,5 @@
 import AddProductDialog from "@/components/product/AddProductDialog";
+import UpdateProductDialog from "@/components/product/UpdateProductDialog";
 import Error from "@/components/skeleton/Error";
 import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +29,7 @@ import {
 } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types";
 
-import { ArrowUpDown, PenBoxIcon } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -40,7 +41,7 @@ type TQueryParam = {
 const Products = () => {
   const [queryParams, setQueryParams] = useState<TQueryParam[]>([
     { name: "page", value: "1" },
-    { name: "limit", value: "10" },
+    { name: "limit", value: "6" },
   ]);
 
   const { data, error, isLoading, isFetching } =
@@ -193,9 +194,7 @@ const Products = () => {
                   </Badge>
                 </TableCell>
                 <TableCell className="flex justify-between items-center gap-1 mt-3">
-                  <Button variant="secondary" size="sm">
-                    <PenBoxIcon className="h-4 w-4 mr-2" />
-                  </Button>
+                  <UpdateProductDialog product={product} />
                   <Button
                     variant={product.isDeleted ? "ghost" : "destructive"}
                     size="sm"

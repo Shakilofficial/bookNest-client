@@ -3,14 +3,16 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useCreateProductMutation } from "@/redux/features/product/productApi";
+import { CATEGORY_OPTIONS, categoryOptions } from "@/types/categories.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -24,26 +26,7 @@ const productSchema = z.object({
   title: z.string().min(1, "Title is required"),
   author: z.string().min(1, "Author is required"),
   price: z.coerce.number().min(0, "Price must be a positive number"),
-  category: z.enum([
-    "Fiction",
-    "Science",
-    "SelfDevelopment",
-    "Poetry",
-    "Religious",
-    "Fantasy",
-    "Adventure",
-    "Horror",
-    "Romance",
-    "Comedy",
-    "Action",
-    "Thriller",
-    "Drama",
-    "Western",
-    "Mystery",
-    "ScienceFiction",
-    "History",
-    "Technology",
-  ]),
+  category: z.enum(CATEGORY_OPTIONS),
   description: z.string().min(1, "Description is required"),
   quantity: z.coerce
     .number()
@@ -52,29 +35,8 @@ const productSchema = z.object({
   coverImage: z.any().optional(),
 });
 
-const categoryOptions = [
-  "Fiction",
-  "Science",
-  "SelfDevelopment",
-  "Poetry",
-  "Religious",
-  "Fantasy",
-  "Adventure",
-  "Horror",
-  "Romance",
-  "Comedy",
-  "Action",
-  "Thriller",
-  "Drama",
-  "Western",
-  "Mystery",
-  "ScienceFiction",
-  "History",
-  "Technology",
-].map((cat) => ({ value: cat, label: cat }));
-
 const AddProductDialog = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [createProduct] = useCreateProductMutation();
   const form = useForm({ resolver: zodResolver(productSchema) });
 
@@ -103,6 +65,10 @@ const AddProductDialog = () => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add New Product</DialogTitle>
+          {/* ✅ Add DialogDescription to prevent the warning */}
+          <DialogDescription>
+            Fill in the details below to add a new product.
+          </DialogDescription>
         </DialogHeader>
         <Form form={form} onSubmit={onSubmit}>
           {["title", "author", "price", "quantity"].map((field) => (
