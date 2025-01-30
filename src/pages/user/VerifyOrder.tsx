@@ -1,3 +1,4 @@
+import Error from "@/components/skeleton/Error";
 import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,11 +19,12 @@ const VerifyOrder = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
 
-  const { isFetching, isLoading, data } = useVerifyPaymentQuery(orderId, {
-    refetchOnMountOrArgChange: true,
-  });
-
-  const orderData = data?.data?.[0];
+  const { isFetching, isLoading, error, data } = useVerifyPaymentQuery(
+    orderId,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   if (isLoading || isFetching) {
     return (
@@ -31,6 +33,15 @@ const VerifyOrder = () => {
       </div>
     );
   }
+  if (error) {
+    return (
+      <div>
+        <Error />
+      </div>
+    );
+  }
+
+  const orderData = data?.data?.[0];
 
   return (
     <Container className="max-w-5xl mx-auto">
