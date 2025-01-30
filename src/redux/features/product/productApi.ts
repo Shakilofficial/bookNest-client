@@ -36,9 +36,7 @@ const productApi = baseApi.injectEndpoints({
       query: ({ payload, file }: { payload: any; file?: File }) => {
         const formData = new FormData();
         formData.append("data", JSON.stringify(payload));
-        if (file) {
-          formData.append("coverImage", file);
-        }
+        if (file) formData.append("coverImage", file);
 
         return {
           url: "/products",

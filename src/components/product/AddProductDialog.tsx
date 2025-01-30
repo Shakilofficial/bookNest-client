@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -49,47 +49,47 @@ const productSchema = z.object({
     .number()
     .int()
     .min(0, "Quantity must be a non-negative integer"),
-  coverImage: z.instanceof(File).optional(),
+  coverImage: z.any().optional(),
 });
 
-type ProductFormValues = z.infer<typeof productSchema>;
+const categoryOptions = [
+  "Fiction",
+  "Science",
+  "SelfDevelopment",
+  "Poetry",
+  "Religious",
+  "Fantasy",
+  "Adventure",
+  "Horror",
+  "Romance",
+  "Comedy",
+  "Action",
+  "Thriller",
+  "Drama",
+  "Western",
+  "Mystery",
+  "ScienceFiction",
+  "History",
+  "Technology",
+].map((cat) => ({ value: cat, label: cat }));
 
-const AddProductDialog: React.FC = () => {
+const AddProductDialog = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [createProduct] = useCreateProductMutation();
+  const form = useForm({ resolver: zodResolver(productSchema) });
 
-  const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
-    defaultValues: {
-      title: "",
-      author: "",
-      price: 0,
-      category: "Fiction",
-      description: "",
-      quantity: 0,
-    },
-  });
-
-  const onSubmit = async (data: ProductFormValues) => {
+  const onSubmit = async (data: any) => {
+    const { coverImage, ...payload } = data;
+    const dataToSend = {
+      payload,
+      file: coverImage,
+    };
     try {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === "coverImage" && value instanceof File) {
-          formData.append(key, value);
-        } else {
-          formData.append(key, String(value));
-        }
-      });
-
-      await createProduct({
-        payload: data,
-        file: data.coverImage,
-      }).unwrap();
+      await createProduct(dataToSend).unwrap();
       toast.success("Product created successfully");
       setIsOpen(false);
-      form.reset();
-    } catch (error) {
-      toast.error("Failed to create product");
+    } catch {
+      toast.error("Failed to create product.");
     }
   };
 
@@ -97,8 +97,7 @@ const AddProductDialog: React.FC = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="default">
-          <PlusIcon className="h-4 w-4 mr-2" />
-          Add Product
+          <PlusIcon className="h-4 w-4 mr-2" /> Add Product
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -106,45 +105,21 @@ const AddProductDialog: React.FC = () => {
           <DialogTitle>Add New Product</DialogTitle>
         </DialogHeader>
         <Form form={form} onSubmit={onSubmit}>
-          <TextInput
-            name="title"
-            label="Title"
-            placeholder="Enter product title"
-          />
-          <TextInput
-            name="author"
-            label="Author"
-            placeholder="Enter author name"
-          />
-          <TextInput
-            name="price"
-            label="Price"
-            type="number"
-            placeholder="Enter price"
-          />
+          {["title", "author", "price", "quantity"].map((field) => (
+            <TextInput
+              key={field}
+              name={field}
+              label={field.charAt(0).toUpperCase() + field.slice(1)}
+              type={
+                field === "price" || field === "quantity" ? "number" : "text"
+              }
+              placeholder={`Enter ${field}`}
+            />
+          ))}
           <SelectDropdown
             name="category"
             label="Category"
-            options={[
-              { value: "Fiction", label: "Fiction" },
-              { value: "Science", label: "Science" },
-              { value: "SelfDevelopment", label: "Self Development" },
-              { value: "Poetry", label: "Poetry" },
-              { value: "Religious", label: "Religious" },
-              { value: "Fantasy", label: "Fantasy" },
-              { value: "Adventure", label: "Adventure" },
-              { value: "Horror", label: "Horror" },
-              { value: "Romance", label: "Romance" },
-              { value: "Comedy", label: "Comedy" },
-              { value: "Action", label: "Action" },
-              { value: "Thriller", label: "Thriller" },
-              { value: "Drama", label: "Drama" },
-              { value: "Western", label: "Western" },
-              { value: "Mystery", label: "Mystery" },
-              { value: "ScienceFiction", label: "Science Fiction" },
-              { value: "History", label: "History" },
-              { value: "Technology", label: "Technology" },
-            ]}
+            options={categoryOptions}
             placeholder="Select a category"
           />
           <Textarea
@@ -152,18 +127,13 @@ const AddProductDialog: React.FC = () => {
             label="Description"
             placeholder="Enter product description"
           />
-          <TextInput
-            name="quantity"
-            label="Quantity"
-            type="number"
-            placeholder="Enter quantity"
-          />
           <FileUpload
             name="coverImage"
             label="Cover Image"
-            acceptedFileTypes={["image/jpeg", "image/png"]}
-            maxFileSize={5000000}
             id="coverImage"
+            acceptedFileTypes={["image/jpeg", "image/png", "image/webp"]}
+            maxFileSize={5000000}
+            description="Max file size: 500MB"
           />
         </Form>
       </DialogContent>
