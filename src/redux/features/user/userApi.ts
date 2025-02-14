@@ -8,6 +8,7 @@ const userApi = baseApi.injectEndpoints({
         url: "/users/me",
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
 
     // Update the authenticated user's profile

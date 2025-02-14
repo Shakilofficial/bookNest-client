@@ -117,9 +117,6 @@ const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
               maxFileSize={5000000}
               description="Max file size: 500MB"
             />
-            <Button type="submit" variant="default" className="w-full">
-              Save Changes
-            </Button>
           </form>
         </Form>
       </DialogContent>
