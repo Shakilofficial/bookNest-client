@@ -44,30 +44,30 @@ const ProductCard = ({ product }: ProductCardProps) => {
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl cursor-pointer h-full flex flex-col group">
       <CardHeader className="p-0 relative overflow-hidden">
         <img
-          src={product.coverImage || "/placeholder.svg"}
-          alt={product.title}
+          src={product?.coverImage || "/placeholder.svg"}
+          alt={product?.title}
           className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <Badge
           variant="secondary"
           className="absolute top-2 right-2 text-[10px] py-0.5 px-1 rounded-full font-semibold"
         >
-          {product.category}
+          {product?.category}
         </Badge>
-        {!product.inStock && (
+        {!product?.inStock && (
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center">
             <span className="text-foreground text-lg font-semibold">
-              {product.isDeleted ? "Unavailable" : "Out of Stock"}
+              {product?.isDeleted ? "Unavailable" : "Out of Stock"}
             </span>
           </div>
         )}
       </CardHeader>
       <CardContent className="flex flex-col p-2 flex-grow">
         <CardTitle className="text-sm font-semibold mb-1 line-clamp-2">
-          {product.title}
+          {product?.title}
         </CardTitle>
         <CardDescription className="text-xs flex justify-between items-center mt-1">
-          <p className="line-clamp-1">{product.author || "Unknown Author"}</p>
+          <p className="line-clamp-1">{product?.author || "Unknown Author"}</p>
           <Button
             onClick={handleLike}
             variant="ghost"
@@ -82,14 +82,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </Button>
         </CardDescription>
         <div className="mt-2 flex items-center justify-between">
-          <p className="text-sm font-semibold">৳ {product.price.toFixed(2)}</p>
-          <Badge variant={product.inStock ? "secondary" : "destructive"}>
-            {product.inStock ? "In Stock" : "Out of Stock"}
+          <p className="text-sm font-semibold">৳ {product?.price.toFixed(2)}</p>
+          <Badge variant={product?.inStock ? "secondary" : "destructive"}>
+            {product?.inStock ? "In Stock" : "Out of Stock"}
           </Badge>
         </div>
       </CardContent>
       <CardFooter className="p-2 flex justify-between items-center gap-1">
-        <Link to={`/product/${product._id}`} className="flex-1">
+        <Link to={`/product/${product?._id}`} className="flex-1">
           <Button variant="secondary" className="p-1 text-xs sm:p-2 md:p-3">
             <Eye className="text-sm sm:text-base md:text-lg" />
             <span className="hidden lg:inline text-xs">View Details</span>
@@ -98,7 +98,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <Button
           variant="default"
           onClick={() => handleAddToCart()}
-          disabled={!product.inStock}
+          disabled={!product?.inStock}
           className="p-1 text-xs sm:p-2 md:p-3"
         >
           <ShoppingCart className="text-sm sm:text-base md:text-lg" />

@@ -21,12 +21,12 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
   const handleAddToCart = () => {
     dispatch(
       addToCart({
-        product: product._id,
-        title: product.title,
-        price: product.price,
+        product: product?._id,
+        title: product?.title,
+        price: product?.price,
         quantity: 1,
-        stock: product.quantity,
-        coverImage: product.coverImage,
+        stock: product?.quantity,
+        coverImage: product?.coverImage,
       })
     );
   };
@@ -36,8 +36,8 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
       <div className="md:flex">
         <div className="md:w-1/3">
           <img
-            src={product.coverImage || "/placeholder.svg"}
-            alt={product.title}
+            src={product?.coverImage || "/placeholder.svg"}
+            alt={product?.title}
             className="w-full h-full object-cover"
           />
         </div>
@@ -46,33 +46,33 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-xl md:text-2xl lg:text-3xl font-bold mb-2">
-                  {product.title}
+                  {product?.title}
                 </CardTitle>
                 <p className="md:text-lg lg:text-xl mb-2 text-muted-foreground font-bold">
-                  by {product.author}
+                  by {product?.author}
                 </p>
                 <Badge
-                  variant={product.inStock ? "default" : "destructive"}
+                  variant={product?.inStock ? "default" : "destructive"}
                   className="text-xs md:text-sm"
                 >
-                  {product.inStock ? "In Stock" : "Out of Stock"}
+                  {product?.inStock ? "In Stock" : "Out of Stock"}
                 </Badge>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">{product.description}</p>
+            <p className="text-muted-foreground mb-4">{product?.description}</p>
             <p className="md:text-lg lg:text-xl mb-2 text-muted-foreground font-bold">
-              Published: {new Date(product.publishedAt).toLocaleDateString()}
+              Published: {new Date(product?.publishedAt).toLocaleDateString()}
             </p>
             <p className="text-2xl font-bold mb-4">
-              ৳ {product.price.toFixed(2)}
+              ৳ {product?.price.toFixed(2)}
             </p>
           </CardContent>
           <CardFooter>
             <Button
               onClick={() => handleAddToCart()}
-              disabled={!product.inStock}
+              disabled={!product?.inStock}
               className="w-full md:w-auto"
             >
               <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart

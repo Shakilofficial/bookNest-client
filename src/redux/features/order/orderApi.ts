@@ -7,9 +7,9 @@ const orderApi = baseApi.injectEndpoints({
       query: (params) => ({
         url: "/orders/all",
         method: "GET",
-        params, 
+        params,
       }),
-      providesTags: ["Orders"], 
+      providesTags: ["Orders"],
     }),
 
     // Fetch user-specific orders
@@ -17,7 +17,7 @@ const orderApi = baseApi.injectEndpoints({
       query: (params) => ({
         url: "/orders",
         method: "GET",
-        params, 
+        params,
       }),
       providesTags: ["UserOrders"],
     }),
@@ -39,6 +39,16 @@ const orderApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    //update order status
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `/orders/${orderId}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Orders"],
+    }),
   }),
 });
 
@@ -46,5 +56,6 @@ export const {
   useFetchAllOrdersQuery,
   useFetchUserOrdersQuery,
   useCreateOrderMutation,
+  useUpdateOrderStatusMutation,
   useVerifyPaymentQuery,
 } = orderApi;

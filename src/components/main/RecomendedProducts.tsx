@@ -9,22 +9,23 @@ import SectionHeader from "../utils/SectionHeader";
 const RecomendedProducts = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
 
-  const { data, error, isLoading, isFetching } = useGetAllProductsQuery([
-    { name: "sortBy", value: "publishedAt" },
-    { name: "sortOrder", value: "desc" },
-    { name: "limit", value: 10 },
-  ]);
+  const { isFetching, isLoading, isError, error, data } =
+    useGetAllProductsQuery([
+      { name: "sortBy", value: "publishedAt" },
+      { name: "sortOrder", value: "desc" },
+      { name: "limit", value: 10 },
+    ]);
   useEffect(() => {
     if (data?.data) {
       setProducts(data.data);
     }
   }, [data]);
 
-  if (isLoading || isFetching) {
+  if (isFetching || isLoading) {
     return <GridSkeleton />;
   }
 
-  if (error) {
+  if (isError || error) {
     return (
       <div>
         <Error />
@@ -41,8 +42,8 @@ const RecomendedProducts = () => {
           className="text-center mb-8"
         />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
-          {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+          {products?.map((product) => (
+            <ProductCard key={product?._id} product={product} />
           ))}
         </div>
       </div>

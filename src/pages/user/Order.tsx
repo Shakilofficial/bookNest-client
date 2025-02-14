@@ -1,3 +1,4 @@
+import Error from "@/components/skeleton/Error";
 import {
   Accordion,
   AccordionContent,
@@ -40,14 +41,24 @@ import { Link } from "react-router-dom";
 const Order = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  const { isLoading, data } = useFetchUserOrdersQuery({ page, limit });
+  const { isFetching, isLoading, isError, data } = useFetchUserOrdersQuery({
+    page,
+    limit,
+  });
   const orders: TOrder[] = data?.data || [];
 
   const totalPages = data?.meta?.totalPage || 1;
-  if (isLoading) {
+  if (isFetching || isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Error />
       </div>
     );
   }
@@ -82,14 +93,14 @@ const Order = () => {
                     <div className="flex items-center gap-4">
                       <ShoppingBag className="h-5 w-5" />
                       <span className="font-medium">
-                        Order #{order._id.slice(-6)}
+                        Order #{order?._id.slice(-6)}
                       </span>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Badge className={getStatusColor(order.status)}>
-                        {order.status}
+                      <Badge className={getStatusColor(order?.status)}>
+                        {order?.status}
                       </Badge>
-                      <span>${order.totalPrice.toFixed(2)}</span>
+                      <span>${order?.totalPrice.toFixed(2)}</span>
                     </div>
                   </div>
                 </AccordionTrigger>
@@ -102,16 +113,16 @@ const Order = () => {
                       </h3>
                       <p>
                         <strong>Date:</strong>{" "}
-                        {new Date(order.createdAt).toLocaleString()}
+                        {new Date(order?.createdAt).toLocaleString()}
                       </p>
                       <p>
-                        <strong>Total:</strong> ${order.totalPrice.toFixed(2)}
+                        <strong>Total:</strong> ${order?.totalPrice.toFixed(2)}
                       </p>
                       <p>
-                        <strong>Status:</strong> {order.status}
+                        <strong>Status:</strong> {order?.status}
                       </p>
                     </div>
-                    {order.transaction && (
+                    {order?.transaction && (
                       <div>
                         <h3 className="font-semibold mb-2 flex items-center gap-2">
                           <CreditCard className="h-4 w-4" />
@@ -119,17 +130,17 @@ const Order = () => {
                         </h3>
                         <p>
                           <strong>Transaction ID:</strong>{" "}
-                          {order.transaction.id}
+                          {order?.transaction.id}
                         </p>
                         <p>
-                          <strong>Method:</strong> {order.transaction.method}
+                          <strong>Method:</strong> {order?.transaction.method}
                         </p>
                         <p>
-                          <strong>Date:</strong> {order.transaction.date_time}
+                          <strong>Date:</strong> {order?.transaction.date_time}
                         </p>
                         <p>
                           <strong>Status:</strong>{" "}
-                          {order.transaction.bank_status}
+                          {order?.transaction.bank_status}
                         </p>
                       </div>
                     )}
@@ -145,32 +156,32 @@ const Order = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {order.products.map((item, productIndex) => (
+                        {order?.products.map((item, productIndex) => (
                           <TableRow key={productIndex}>
                             <TableCell className="font-medium">
-                              {item.product ? (
+                              {item?.product ? (
                                 <div className="flex items-center gap-2">
                                   <img
                                     src={
-                                      item.product.coverImage ||
+                                      item?.product?.coverImage ||
                                       "/placeholder.svg"
                                     }
-                                    alt={item.product.title}
+                                    alt={item?.product?.title}
                                     className="w-10 h-10 object-cover rounded"
                                   />
-                                  {item.product.title}
+                                  {item?.product?.title}
                                 </div>
                               ) : (
                                 "Product Unavailable"
                               )}
                             </TableCell>
-                            <TableCell>{item.quantity}</TableCell>
+                            <TableCell>{item?.quantity}</TableCell>
                             <TableCell>
                               $
-                              {item.product
-                                ? (item.product.price * item.quantity).toFixed(
-                                    2
-                                  )
+                              {item?.product
+                                ? (
+                                    item?.product?.price * item?.quantity
+                                  ).toFixed(2)
                                 : "N/A"}
                             </TableCell>
                           </TableRow>
@@ -179,9 +190,9 @@ const Order = () => {
                     </Table>
                   </div>
                   <div className="mt-4 flex justify-end">
-                    {order.transaction ? (
+                    {order?.transaction ? (
                       <Link
-                        to={`/order/verify?order_id=${order.transaction.id}`}
+                        to={`/order/verify?order_id=${order?.transaction?.id}`}
                       >
                         <Button variant="outline" size="sm">
                           View Full Details

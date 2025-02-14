@@ -44,7 +44,7 @@ const Products = () => {
     { name: "limit", value: "6" },
   ]);
 
-  const { data, error, isLoading, isFetching } =
+  const { isFetching, isLoading, isError, error, data } =
     useGetAllProductsQuery(queryParams);
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -102,7 +102,7 @@ const Products = () => {
       toast.success("Product deleted successfully.");
     } catch (error) {
       console.error("Failed to delete product:", error);
-      toast.error("Failed to delete product. Please try again.");
+      toast.error("Failed to delete product?. Please try again.");
     }
   };
 
@@ -110,13 +110,11 @@ const Products = () => {
     return (
       <div>
         <GridSkeleton />
-        <GridSkeleton />
-        <GridSkeleton />
       </div>
     );
   }
 
-  if (error) {
+  if (isError || error) {
     return (
       <div>
         <Error />
@@ -132,7 +130,7 @@ const Products = () => {
         subtitle="Manage your products here"
       />
       <CardContent>
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4 gap-4">
           <Input
             placeholder="Search products..."
             onChange={(e) => handleSearch(e.target.value)}
@@ -171,44 +169,44 @@ const Products = () => {
           </TableHeader>
           <TableBody>
             {products.map((product: TProduct) => (
-              <TableRow key={product._id}>
+              <TableRow key={product?._id}>
                 <TableCell>
                   <img
-                    src={product.coverImage || "/placeholder.svg"}
-                    alt={product.title}
+                    src={product?.coverImage || "/placeholder.svg"}
+                    alt={product?.title}
                     className="w-16 h-16 object-cover"
                   />
                 </TableCell>
-                <TableCell className="font-medium">{product.title}</TableCell>
-                <TableCell>{product.author}</TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
-                <TableCell>{product.category}</TableCell>
+                <TableCell className="font-medium">{product?.title}</TableCell>
+                <TableCell>{product?.author}</TableCell>
+                <TableCell>${product?.price.toFixed(2)}</TableCell>
+                <TableCell>{product?.category}</TableCell>
                 <TableCell className="text-center">
-                  {product.quantity}
+                  {product?.quantity}
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={product.isDeleted ? "destructive" : "default"}
+                    variant={product?.isDeleted ? "destructive" : "default"}
                   >
-                    {product.isDeleted ? "Deleted" : "Active"}
+                    {product?.isDeleted ? "Deleted" : "Active"}
                   </Badge>
                 </TableCell>
                 <TableCell className="flex justify-between items-center gap-1 mt-3">
                   <UpdateProductDialog product={product} />
                   <Button
-                    variant={product.isDeleted ? "ghost" : "destructive"}
+                    variant={product?.isDeleted ? "ghost" : "destructive"}
                     size="sm"
-                    onClick={() => handleDeleteProduct(product._id)}
+                    onClick={() => handleDeleteProduct(product?._id)}
                   >
-                    {product.isDeleted ? "Restore" : "Delete"}
+                    {product?.isDeleted ? "Restore" : "Delete"}
                   </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-        <Pagination className="mt-4">
-          <PaginationContent>
+        <Pagination>
+          <PaginationContent className="mt-4 max-w-[380px] text-sm">
             <PaginationItem>
               <PaginationPrevious
                 onClick={() =>

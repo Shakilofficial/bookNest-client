@@ -55,20 +55,20 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl cursor-pointer h-[340px] max-w-xs mx-auto flex flex-col group border bg-card rounded-lg">
       <CardHeader className="p-0 relative overflow-hidden">
         <img
-          src={product.coverImage || "/placeholder.svg"}
-          alt={product.title}
+          src={product?.coverImage || "/placeholder.svg"}
+          alt={product?.title}
           className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <Badge
           variant="default"
           className="absolute top-2 right-2 text-xs py-1 px-2 rounded-full font-medium bg-secondary text-secondary-foreground"
         >
-          {product.category}
+          {product?.category}
         </Badge>
-        {!product.inStock && (
+        {!product?.inStock && (
           <div className="absolute inset-0 bg-overlay flex items-center justify-center">
             <span className="text-overlay-foreground text-sm font-medium">
-              {product.isDeleted ? "Unavailable" : "Out of Stock"}
+              {product?.isDeleted ? "Unavailable" : "Out of Stock"}
             </span>
           </div>
         )}
@@ -76,10 +76,10 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
 
       <CardContent className="flex flex-col p-4 flex-grow">
         <CardTitle className="text-sm font-semibold mb-1 line-clamp-2 text-primary">
-          {product.title}
+          {product?.title}
         </CardTitle>
         <CardDescription className="text-xs flex justify-between items-center mt-1 text-muted-foreground">
-          <p className="line-clamp-1">{product.author || "Unknown Author"}</p>
+          <p className="line-clamp-1">{product?.author || "Unknown Author"}</p>
           <Button
             onClick={handleLike}
             variant="ghost"
@@ -95,14 +95,14 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
         </CardDescription>
         <div className="mt-2 flex items-center justify-between">
           <p className="text-sm font-semibold text-primary">
-            ৳ {product.price.toFixed(2)}
+            ৳ {product?.price.toFixed(2)}
           </p>
           <p
             className={`text-xs font-medium ${
-              product.inStock ? "text-success" : "text-destructive"
+              product?.inStock ? "text-success" : "text-destructive"
             }`}
           >
-            {product.inStock ? "In Stock" : "Out of Stock"}
+            {product?.inStock ? "In Stock" : "Out of Stock"}
           </p>
         </div>
       </CardContent>
@@ -118,31 +118,31 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
             <DialogContent className="w-[300px] rounded-lg bg-card">
               <DialogHeader>
                 <DialogTitle className="text-base font-semibold text-primary">
-                  {product.title}
+                  {product?.title}
                 </DialogTitle>
                 <p className="text-sm text-muted-foreground">
-                  by {product.author}
+                  by {product?.author}
                 </p>
               </DialogHeader>
               <DialogFooter className="grid gap-3 py-4">
                 <img
-                  src={product.coverImage || "/placeholder.svg"}
-                  alt={product.title}
+                  src={product?.coverImage || "/placeholder.svg"}
+                  alt={product?.title}
                   className="w-28 mx-auto"
                 />
                 <p className="text-sm text-muted-foreground">
-                  {product.description}
+                  {product?.description}
                 </p>
                 <div className="space-y-1 text-muted-foreground">
                   <p>
-                    <strong>Category:</strong> {product.category}
+                    <strong>Category:</strong> {product?.category}
                   </p>
                   <p>
                     <strong>Published:</strong>{" "}
-                    {format(new Date(product.publishedAt), "MMMM d, yyyy")}
+                    {format(new Date(product?.publishedAt), "MMMM d, yyyy")}
                   </p>
                 </div>
-                <Link to={`/product/${product._id}`}>
+                <Link to={`/product/${product?._id}`}>
                   <Button className="w-full text-sm font-medium">
                     View More
                   </Button>
@@ -154,7 +154,7 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
         <Button
           variant="default"
           onClick={() => handleAddToCart()}
-          disabled={!product.inStock}
+          disabled={!product?.inStock}
           className="p-1 text-xs"
         >
           <ShoppingCart className="text-sm" />

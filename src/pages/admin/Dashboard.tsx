@@ -3,7 +3,7 @@ import RecentOrders from "@/components/dashboard/RecentOrders";
 import TopSellingProducts from "@/components/dashboard/TopSellingProducts";
 import TotalRevenue from "@/components/dashboard/TotalRevenue";
 import Error from "@/components/skeleton/Error";
-import Skeleton from "@/components/skeleton/Skeleton";
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import SectionHeader from "@/components/utils/SectionHeader";
 import { useFetchAllOrdersQuery } from "@/redux/features/order/orderApi";
 import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
@@ -19,7 +19,13 @@ import {
 } from "lucide-react";
 
 const Dashboard = () => {
-  const { data: ordersData } = useFetchAllOrdersQuery({
+  const {
+    isFetching,
+    isLoading,
+    isError,
+    error,
+    data: ordersData,
+  } = useFetchAllOrdersQuery({
     page: 1,
     limit: 1000,
     sortBy: "createdAt",
@@ -28,35 +34,54 @@ const Dashboard = () => {
   const orders: TOrder[] = ordersData?.data || [];
 
   const {
-    data: usersData,
+    isFetching: usersFetching,
     isLoading: usersLoading,
-    isFetching,
-    error,
+    isError: isUsersError,
+    error: usersError,
+    data: usersData,
   } = useGetAllUsersQuery(undefined);
   const {
-    data: productsData,
-    isLoading: productsLoading,
     isFetching: productsFetching,
+    isLoading: productsLoading,
+    isError: isProductsError,
     error: productsError,
+    data: productsData,
   } = useGetAllProductsQuery(undefined);
 
-  if (isFetching || usersLoading || productsFetching) {
+  if (
+    isFetching ||
+    usersFetching ||
+    productsFetching ||
+    isLoading ||
+    usersLoading ||
+    productsLoading
+  ) {
     return (
       <div>
-        <Skeleton />
+        <GridSkeleton />
       </div>
     );
   }
-  if (error || productsError) {
+  if (
+    isError ||
+    isUsersError ||
+    isProductsError ||
+    error ||
+    usersError ||
+    productsError
+  ) {
     return (
       <div>
         <Error />
       </div>
     );
   }
-  const totalOrders = orders.length;
-  const totalCustomers = new Set(orders.map((order) => order.user._id)).size;
-  const totalRevenue = orders.reduce((sum, order) => sum + order.totalPrice, 0);
+  const totalOrders = orders?.length;
+  const totalCustomers = new Set(orders?.map((order) => order?.user?._id)).size;
+  const totalRevenue = orders?.reduce(
+    (sum, order) => sum + order?.totalPrice,
+    0
+  );
   const averageOrderValue = totalRevenue / totalOrders || 0;
 
   return (

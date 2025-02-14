@@ -58,8 +58,8 @@ const AddProductDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">
-          <PlusIcon className="h-4 w-4 mr-2" /> Add Product
+        <Button variant="default" className="text-xs">
+          <PlusIcon className="h-4 w-4 mr-1" /> Add Product
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

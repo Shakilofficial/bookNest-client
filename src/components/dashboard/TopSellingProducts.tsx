@@ -24,41 +24,43 @@ import GridSkeleton from "../skeleton/GridSkeleton";
 const TopSellingProducts = () => {
   const [timeRange, setTimeRange] = useState("7");
 
-  const { data, isLoading, isFetching, error } = useFetchAllOrdersQuery({
-    page: 1,
-    limit: 1000,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
+  // Fetch all orders
+  const { isFetching, isLoading, isError, error, data } =
+    useFetchAllOrdersQuery({
+      page: 1,
+      limit: 1000,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    });
 
   const orders: TOrder[] = useMemo(() => data?.data || [], [data]);
 
   const topProducts = useMemo(() => {
     if (!orders.length) return [];
 
+    const now = Date.now();
+    const timeRangeMs = Number(timeRange) * 24 * 60 * 60 * 1000;
+
     const filteredOrders = orders.filter((order) => {
-      if (!order?.createdAt || !order?.status || !order?.products) return false;
-      const orderDate = new Date(order.createdAt);
-      const now = new Date();
-      const diffTime = Math.abs(now.getTime() - orderDate.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays <= Number(timeRange) && order.status === "Paid";
+      const orderDate = new Date(order.createdAt).getTime();
+      return now - orderDate <= timeRangeMs && order.status === "Paid";
     });
 
     const productSales = filteredOrders.reduce((acc, order) => {
       order.products.forEach((item) => {
-        if (item?.product?._id) {
-          const productId = item.product._id;
-          if (!acc[productId]) {
-            acc[productId] = {
-              name: item.product.title || "Unknown Product",
-              quantity: 0,
-              revenue: 0,
-            };
-          }
-          acc[productId].quantity += item.quantity || 0;
-          acc[productId].revenue += item.quantity * (item.product.price || 0);
+        const productId = item.product?._id;
+        if (!productId) return;
+
+        if (!acc[productId]) {
+          acc[productId] = {
+            name: item.product.title || "Unknown Product",
+            quantity: 0,
+            revenue: 0,
+          };
         }
+
+        acc[productId].quantity += item.quantity || 0;
+        acc[productId].revenue += item.quantity * (item.product.price || 0);
       });
       return acc;
     }, {} as Record<string, { name: string; quantity: number; revenue: number }>);
@@ -68,11 +70,12 @@ const TopSellingProducts = () => {
       .slice(0, 5)
       .map((product) => ({
         ...product,
-        revenue: Number(product?.revenue.toFixed(2)),
+        revenue: Number(product.revenue.toFixed(2)),
       }));
   }, [orders, timeRange]);
 
-  if (isLoading || isFetching) {
+  // Loading state
+  if (isFetching || isLoading) {
     return (
       <Card className="h-full flex justify-center items-center">
         <GridSkeleton />
@@ -80,7 +83,8 @@ const TopSellingProducts = () => {
     );
   }
 
-  if (error) {
+  // Error state
+  if (isError || error) {
     return (
       <Card className="h-full flex justify-center items-center">
         <Error />
@@ -94,10 +98,7 @@ const TopSellingProducts = () => {
         <CardTitle className="text-base font-semibold text-foreground">
           Top Selling Products
         </CardTitle>
-        <Select
-          value={timeRange}
-          onValueChange={(value) => setTimeRange(value)}
-        >
+        <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Select time range" />
           </SelectTrigger>

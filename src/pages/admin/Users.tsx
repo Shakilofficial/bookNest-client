@@ -39,7 +39,7 @@ const Users = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [search, setSearch] = useState("");
 
-  const { isLoading,isFetching, data, error } = useGetAllUsersQuery({
+  const { isFetching, isLoading, isError, error, data } = useGetAllUsersQuery({
     page,
     limit,
     sortBy,
@@ -68,12 +68,12 @@ const Users = () => {
       );
     } catch (error) {
       toast.error(
-        `Failed to ${isBlocked ? "unblock" : "block"} user. Please try again.`
+        `Failed to ${isBlocked ? "unblock" : "block"} user?. Please try again.`
       );
     }
   };
 
-  if (isLoading || isFetching) {
+  if (isFetching || isLoading) {
     return (
       <div>
         <GridSkeleton />
@@ -81,7 +81,7 @@ const Users = () => {
     );
   }
 
-  if (error) {
+  if (isError || error) {
     return (
       <div>
         <Error />
@@ -129,38 +129,38 @@ const Users = () => {
           </TableHeader>
           <TableBody>
             {users.map((user) => (
-              <TableRow key={user._id}>
+              <TableRow key={user?._id}>
                 <TableCell>
                   <Avatar>
-                    <AvatarImage src={user.profileImg} alt={user.name} />
-                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={user?.profileImg} alt={user?.name} />
+                    <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                 </TableCell>
-                <TableCell className="font-medium">{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
+                <TableCell className="font-medium">{user?.name}</TableCell>
+                <TableCell>{user?.email}</TableCell>
                 <TableCell>
                   <Badge
-                    variant={user.role === "admin" ? "default" : "secondary"}
+                    variant={user?.role === "admin" ? "default" : "secondary"}
                   >
-                    {user.role}
+                    {user?.role}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={user.isBlocked ? "destructive" : "default"}>
-                    {user.isBlocked ? "Blocked" : "Active"}
+                  <Badge variant={user?.isBlocked ? "destructive" : "default"}>
+                    {user?.isBlocked ? "Blocked" : "Active"}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {new Date(user.createdAt).toLocaleDateString()}
+                  {new Date(user?.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleBlockUser(user._id, user.isBlocked)}
-                    disabled={user.role === "admin"}
+                    onClick={() => handleBlockUser(user?._id, user?.isBlocked)}
+                    disabled={user?.role === "admin"}
                   >
-                    {user.isBlocked ? "Unblock" : "Block"}
+                    {user?.isBlocked ? "Unblock" : "Block"}
                   </Button>
                 </TableCell>
               </TableRow>

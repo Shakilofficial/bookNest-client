@@ -8,21 +8,22 @@ import Error from "../skeleton/Error";
 import GridSkeleton from "../skeleton/GridSkeleton";
 
 const RecentOrders = () => {
-  const { data, isFetching, isLoading, error } = useFetchAllOrdersQuery({
-    page: 1,
-    limit: 5,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
+  const { isFetching, isLoading, isError, error, data } =
+    useFetchAllOrdersQuery({
+      page: 1,
+      limit: 5,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    });
 
-  if (isLoading || isFetching) {
+  if (isFetching || isLoading) {
     return (
       <div>
         <GridSkeleton />
       </div>
     );
   }
-  if (error) {
+  if (isError || error) {
     return (
       <div>
         <Error />
@@ -53,26 +54,26 @@ const RecentOrders = () => {
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[400px] pr-4">
-          {recentOrders.map((order) => (
+          {recentOrders?.map((order) => (
             <div
-              key={order._id}
+              key={order?._id}
               className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
             >
               <span className="flex h-2 w-2 translate-y-1 rounded-full bg-primary" />
               <div className="space-y-1">
                 <p className="text-sm font-medium leading-none text-foreground">
-                  {order.user.name} placed an order for $
-                  {order.totalPrice.toFixed(2)}
+                  {order?.user?.name} placed an order for $
+                  {order?.totalPrice.toFixed(2)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {new Date(order.createdAt).toLocaleString()}
+                  {new Date(order?.createdAt).toLocaleString()}
                 </p>
                 <Badge
                   className={`${getStatusColor(
-                    order.status
+                    order?.status
                   )} text-xs font-medium`}
                 >
-                  {order.status}
+                  {order?.status}
                 </Badge>
               </div>
             </div>

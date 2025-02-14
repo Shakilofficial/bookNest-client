@@ -19,7 +19,7 @@ const VerifyOrder = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
 
-  const { isFetching, isLoading, error, data } = useVerifyPaymentQuery(
+  const { isFetching, isLoading, isError, error, data } = useVerifyPaymentQuery(
     orderId,
     {
       refetchOnMountOrArgChange: true,
@@ -33,7 +33,7 @@ const VerifyOrder = () => {
       </div>
     );
   }
-  if (error) {
+  if (error || isError) {
     return (
       <div>
         <Error />

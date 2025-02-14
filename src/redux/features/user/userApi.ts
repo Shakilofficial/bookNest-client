@@ -33,6 +33,7 @@ const userApi = baseApi.injectEndpoints({
         url: `/users/${id}`,
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
 
     // Fetch all users with query parameters for filtering, pagination, etc.
@@ -42,6 +43,7 @@ const userApi = baseApi.injectEndpoints({
         method: "GET",
         params,
       }),
+      providesTags: ["User"],
     }),
 
     // Block a user by ID

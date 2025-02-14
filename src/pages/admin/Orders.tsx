@@ -1,6 +1,6 @@
-import CardSkeleton from "@/components/skeleton/CardSkeleton";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Error from "@/components/skeleton/Error";
-import { Badge } from "@/components/ui/badge";
+import GridSkeleton from "@/components/skeleton/GridSkeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -20,6 +19,13 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -28,25 +34,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import SectionHeader from "@/components/utils/SectionHeader";
-import { useFetchAllOrdersQuery } from "@/redux/features/order/orderApi";
+import {
+  useFetchAllOrdersQuery,
+  useUpdateOrderStatusMutation,
+} from "@/redux/features/order/orderApi";
 import type { TOrder } from "@/types";
 import { ArrowUpDown, Calendar, CreditCard, Eye } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const Orders = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
-  const [search, setSearch] = useState("");
 
-  const { isLoading, isFetching, data, error } = useFetchAllOrdersQuery({
-    page,
-    limit,
-    sortBy,
-    sortOrder,
-    search,
-  });
+  const { isFetching, isLoading, isError, error, data } =
+    useFetchAllOrdersQuery({
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    });
+
+  const [updateOrderStatus, { isLoading: isUpdating }] =
+    useUpdateOrderStatusMutation();
 
   const orders: TOrder[] = data?.data || [];
   const totalPages = data?.meta?.totalPage || 1;
@@ -60,27 +72,24 @@ const Orders = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "paid":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+  const handleStatusUpdate = async (orderId: string, status: string) => {
+    try {
+      await updateOrderStatus({ orderId, status }).unwrap();
+      toast.success("Order status updated successfully");
+    } catch (error) {
+      toast.error("Failed to update order status");
     }
   };
 
-  if (isLoading || isFetching) {
+  if (isFetching || isLoading) {
     return (
       <div>
-        <CardSkeleton />
-        <CardSkeleton />
+        <GridSkeleton />
       </div>
     );
   }
 
-  if (error) {
+  if (isError || error) {
     return (
       <div>
         <Error />
@@ -99,22 +108,15 @@ const Orders = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2">
-            <Input
-              placeholder="Search orders..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="max-w-sm"
-            />
-          </div>
-        </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Order ID</TableHead>
               <TableHead>
-                <Button variant="ghost" onClick={() => handleSort("user.name")}>
+                <Button
+                  variant="ghost"
+                  onClick={() => handleSort("user?.name")}
+                >
                   Customer <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
@@ -137,19 +139,32 @@ const Orders = () => {
           </TableHeader>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order._id}>
+              <TableRow key={order?._id}>
                 <TableCell className="font-medium">
-                  {order._id.slice(-6)}
+                  {order?._id.slice(-6)}
                 </TableCell>
-                <TableCell>{order.user.name}</TableCell>
-                <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
+                <TableCell>{order?.user?.name}</TableCell>
+                <TableCell>${order?.totalPrice.toFixed(2)}</TableCell>
                 <TableCell>
-                  <Badge className={getStatusColor(order.status)}>
-                    {order.status}
-                  </Badge>
+                  <Select
+                    value={order?.status}
+                    onValueChange={(value) =>
+                      handleStatusUpdate(order?._id, value)
+                    }
+                    disabled={isUpdating}
+                  >
+                    <SelectTrigger className="w-[120px]">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Paid">Paid</SelectItem>
+                      <SelectItem value="Shipped">Shipped</SelectItem>
+                      <SelectItem value="Completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell>
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {new Date(order?.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
                   <Dialog>
@@ -170,18 +185,18 @@ const Orders = () => {
                             Order Information
                           </h3>
                           <p>
-                            <strong>Order ID:</strong> {order._id}
+                            <strong>Order ID:</strong> {order?._id}
                           </p>
                           <p>
-                            <strong>Date:</strong>{" "}
-                            {new Date(order.createdAt).toLocaleString()}
+                            <strong>Date:</strong>
+                            {new Date(order?.createdAt).toLocaleString()}
                           </p>
                           <p>
                             <strong>Total:</strong> $
-                            {order.totalPrice.toFixed(2)}
+                            {order?.totalPrice.toFixed(2)}
                           </p>
                           <p>
-                            <strong>Status:</strong> {order.status}
+                            <strong>Status:</strong> {order?.status}
                           </p>
                         </div>
                         <div>
@@ -190,10 +205,10 @@ const Orders = () => {
                             Customer Information
                           </h3>
                           <p>
-                            <strong>Name:</strong> {order.user.name}
+                            <strong>Name:</strong> {order?.user?.name}
                           </p>
                           <p>
-                            <strong>Email:</strong> {order.user.email}
+                            <strong>Email:</strong> {order?.user?.email}
                           </p>
                         </div>
                       </div>
@@ -208,7 +223,7 @@ const Orders = () => {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {order.products.map((item, productIndex) => (
+                            {order?.products.map((item, productIndex) => (
                               <TableRow key={productIndex}>
                                 <TableCell className="font-medium">
                                   {item?.product?.title || "No Title"}

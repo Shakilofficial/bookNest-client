@@ -9,7 +9,6 @@ import {
 import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import type { TProduct } from "@/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FeaturedProductCard from "../product/FeaturedProductCard";
 import Error from "../skeleton/Error";
@@ -18,26 +17,22 @@ import { RainbowButton } from "../ui/rainbow-button";
 import SectionHeader from "../utils/SectionHeader";
 
 const FeaturedProducts = () => {
-  const [products, setProducts] = useState<TProduct[]>([]);
-
-  const { data, error, isLoading, isFetching } = useGetAllProductsQuery([
-    { name: "sortBy", value: "price" },
-    { name: "sortOrder", value: "desc" },
-    { name: "limit", value: 10 },
-  ]);
-  useEffect(() => {
-    if (data?.data) {
-      setProducts(data.data);
-    }
-  }, [data]);
+  const { isFetching, isLoading, isError, error, data } =
+    useGetAllProductsQuery([
+      { name: "sortBy", value: "price" },
+      { name: "sortOrder", value: "desc" },
+      { name: "limit", value: 10 },
+    ]);
 
   if (isLoading || isFetching) {
-    return <LoadingState />;
+    return <GridSkeleton />;
   }
 
-  if (error) {
-    return <ErrorState />;
+  if (isError || error) {
+    return <Error />;
   }
+
+  const products: TProduct[] = data?.data || [];
 
   return (
     <section className="py-12">
@@ -98,17 +93,5 @@ const FeaturedProducts = () => {
     </section>
   );
 };
-
-const LoadingState = () => (
-  <section className="flex justify-center items-center min-h-[200px]">
-    <GridSkeleton />
-  </section>
-);
-
-const ErrorState = () => (
-  <section className="flex justify-center items-center min-h-[200px]">
-    <Error />
-  </section>
-);
 
 export default FeaturedProducts;

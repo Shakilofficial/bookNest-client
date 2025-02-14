@@ -15,12 +15,13 @@ import Error from "../skeleton/Error";
 import GridSkeleton from "../skeleton/GridSkeleton";
 
 const TotalRevenue = () => {
-  const { data, isLoading, isFetching, error } = useFetchAllOrdersQuery({
-    page: 1,
-    limit: 1000,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
+  const { isFetching, isLoading, isError, error, data } =
+    useFetchAllOrdersQuery({
+      page: 1,
+      limit: 1000,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    });
   const orders: TOrder[] = data?.data || [];
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.totalPrice, 0);
@@ -35,14 +36,14 @@ const TotalRevenue = () => {
     { name: "Jun", revenue: 5500 },
     { name: "Jul", revenue: totalRevenue },
   ];
-  if (isLoading || isFetching) {
+  if (isFetching || isLoading) {
     return (
       <Card className="h-full flex justify-center items-center">
         <GridSkeleton />
       </Card>
     );
   }
-  if (error) {
+  if (isError || error) {
     return (
       <Card className="h-full flex justify-center items-center">
         <Error />
@@ -65,7 +66,7 @@ const TotalRevenue = () => {
         <p className="text-sm text-muted-foreground mt-1">
           <span className="text-green-600 dark:text-green-400 font-medium">
             ↑ {percentageIncrease}%
-          </span>{" "}
+          </span>
           from last month
         </p>
         <div className="mt-4 h-[200px]">
