@@ -21,12 +21,12 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
   const handleAddToCart = () => {
     dispatch(
       addToCart({
-        product: product?._id,
-        title: product?.title,
-        price: product?.price,
+        product: product._id,
+        title: product.title,
+        price: product.price,
         quantity: 1,
-        stock: product?.quantity,
-        coverImage: product?.coverImage,
+        stock: product.quantity,
+        coverImage: product.coverImage,
       })
     );
   };

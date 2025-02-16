@@ -34,11 +34,10 @@ const ProductDetails = () => {
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
   const {
+    data: product,
     isLoading: productLoading,
     isFetching: productFetching,
-    isError: isProductError,
     error: productError,
-    data: product,
   } = useGetSingleProductQuery(id!);
 
   const {
@@ -91,7 +90,7 @@ const ProductDetails = () => {
     }
   };
 
-  if (productFetching || productLoading) {
+  if (productLoading || productFetching) {
     return (
       <Container className="max-w-7xl mx-auto">
         <CardSkeleton />
@@ -99,7 +98,7 @@ const ProductDetails = () => {
     );
   }
 
-  if (isProductError || productError || !product) {
+  if (productError || !product) {
     return (
       <Container className="max-w-7xl mx-auto">
         <Error message="Failed to load product details. Please try again later." />
@@ -147,16 +146,16 @@ const ProductDetails = () => {
           <div className="text-center py-4">Loading reviews...</div>
         ) : reviewsError ? (
           <Error message="Failed to load reviews. Please try again later." />
-        ) : reviews?.data && reviews?.data?.length > 0 ? (
+        ) : reviews?.data && reviews.data.length > 0 ? (
           <ReviewList
-            reviews={reviews?.data}
+            reviews={reviews.data}
             currentUser={currentUser}
             onUpdateReview={handleUpdateReview}
             onDeleteReview={handleDeleteReview}
           />
         ) : (
           <div className="text-center py-4 text-gray-500">
-            <Error message="No reviews yet. Be the first to review this product!" />
+            No reviews yet. Be the first to review this product!
           </div>
         )}
       </div>
