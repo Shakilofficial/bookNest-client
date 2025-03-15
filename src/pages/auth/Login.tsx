@@ -44,7 +44,7 @@ const Login = () => {
       }).unwrap();
 
       if (response?.data?.token) {
-        const user = verifyToken(response.data.token); // Ensure valid token
+        const user = verifyToken(response.data.token);
         if (user) {
           dispatch(setUser({ user, token: response.data.token }));
           toast.success("Logged in successfully", { id: toastId });

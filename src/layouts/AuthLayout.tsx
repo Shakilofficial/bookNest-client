@@ -40,8 +40,9 @@ const AuthLayout = ({ backgroundImage }: AuthLayoutProps) => {
       </div>
 
       {/* Right Section with Outlet */}
-      <div className="flex flex-col justify-center items-center flex-1 px-6 py-8 lg:flex-none lg:px-16 xl:px-24 bg-card text-card-foreground shadow-md">
-        <div className="w-full max-w-md space-y-8">
+      <div className="flex flex-col w-[380px] lg:max-w-md justify-center items-center flex-1 px-6 py-8 lg:flex-none lg:px-12 xl:px-16 bg-card text-card-foreground shadow-md">
+        <div className="space-y-8">
+          <Logo className=" flex justify-center items-center" />
           <Outlet />
         </div>
       </div>

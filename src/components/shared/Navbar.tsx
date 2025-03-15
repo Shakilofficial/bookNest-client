@@ -17,7 +17,7 @@ import UserProfile from "./UserProfile";
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4">
+      <div className="container flex h-16 items-center justify-between px-2">
         {/* Logo Section */}
         <Logo className="mr-4 flex-none" />
 
@@ -27,7 +27,7 @@ const Navbar = () => {
         </div>
 
         {/* Actions Section */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-2">
           <ThemeToggle />
           <Cart />
           <UserProfile />
