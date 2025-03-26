@@ -2,6 +2,7 @@
 import { Form } from "@/components/form/Form";
 import { PasswordInput } from "@/components/form/PasswordInput";
 import { TextInput } from "@/components/form/TextInput";
+import { Button } from "@/components/ui/button";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hook";
@@ -49,11 +50,8 @@ const Login = () => {
           dispatch(setUser({ user, token: response.data.token }));
           toast.success("Logged in successfully", { id: toastId });
 
-          // Navigate based on role
           if (user?.role === "admin") {
-            navigate("/dashboard"); // Admins go to dashboard
-          } else if (user?.role === "user") {
-            navigate("/"); // Users go to home
+            navigate("/dashboard");
           } else {
             navigate("/");
           }
@@ -67,6 +65,18 @@ const Login = () => {
       const errorMessage = error?.data?.message || "Invalid credentials";
       toast.error(errorMessage, { id: toastId });
     }
+  };
+
+  const handleDemoLogin = async (role: "admin" | "user") => {
+    const credentials =
+      role === "admin"
+        ? { email: "admin@example.com", password: "123456" }
+        : { email: "johndoe@example.com", password: "securepassword" };
+
+    form.setValue("email", credentials.email);
+    form.setValue("password", credentials.password);
+
+    await onSubmit(credentials);
   };
 
   return (
@@ -95,14 +105,26 @@ const Login = () => {
         />
       </Form>
 
+      {/* Demo Login Buttons */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+        <Button
+          size="sm"
+          variant={"outline"}
+          onClick={() => handleDemoLogin("user")}
+        >
+          Demo User
+        </Button>
+        <Button
+          size="sm"
+          variant={"destructive"}
+          onClick={() => handleDemoLogin("admin")}
+        >
+          Demo Admin
+        </Button>
+      </div>
+
       {/* Additional Links */}
       <div className="text-center space-y-2">
-        <Link
-          to="/auth/forget-password"
-          className="text-sm text-muted-foreground hover:underline"
-        >
-          Forgot your password?
-        </Link>
         <div className="text-sm">
           Don't have an account?{" "}
           <Link to="/auth/register" className="text-primary hover:underline">
