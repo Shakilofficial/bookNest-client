@@ -81,12 +81,12 @@ export const Cart = () => {
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-96">
+      <SheetContent className="w-[340px]">
         <SheetHeader>
           <SheetTitle>Your Cart</SheetTitle>
           <SheetDescription>Manage your items below:</SheetDescription>
         </SheetHeader>
-        <ScrollArea className="h-[70vh] my-4">
+        <ScrollArea className="h-[60vh] my-4">
           {cart?.items?.length > 0 ? (
             cart?.items?.map((item) => (
               <div

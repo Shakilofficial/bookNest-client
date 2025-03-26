@@ -42,8 +42,8 @@ const Categories = () => {
     <section className="py-12">
       <div className="container mx-auto">
         <SectionHeader
-          highlight="Explore Product Categories"
-          subtitle="Discover the most popular categories."
+          highlight="Explore Categories"
+          subtitle="Discover the most popular Categories."
           className="text-center mb-8"
         />
         <Carousel

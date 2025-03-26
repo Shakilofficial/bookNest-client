@@ -38,8 +38,8 @@ const FeaturedProducts = () => {
     <section className="py-12">
       <div className="container mx-auto">
         <SectionHeader
-          highlight="Featured Products"
-          subtitle="Discover the most popular products, curated just for you."
+          highlight="Featured Books"
+          subtitle="Discover the most popular books, curated just for you."
           className="text-center mb-8"
         />
         <Carousel
@@ -85,7 +85,7 @@ const FeaturedProducts = () => {
         <div className="text-center mt-8">
           <Link to="/all-products">
             <RainbowButton className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
-              Explore All Products
+              Explore All Books
             </RainbowButton>
           </Link>
         </div>

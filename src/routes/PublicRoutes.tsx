@@ -5,6 +5,7 @@ import ProductDetails from "@/pages/ProductDetails";
 import Order from "@/pages/user/Order";
 import VerifyOrder from "@/pages/user/VerifyOrder";
 import ProtectedRoute from "./ProtectedRoute";
+import AboutUs from "@/pages/AboutUs";
 
 export const PublicPaths = [
   {
@@ -22,6 +23,12 @@ export const PublicPaths = [
     path: "/product/:id",
     element: <ProductDetails />,
   },
+  {
+    name: "about-us",
+    path: "/about-us",
+    element: <AboutUs />,
+  },
+  
   {
     name: "contact",
     path: "/contact",
