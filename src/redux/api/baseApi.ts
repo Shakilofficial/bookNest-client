@@ -21,7 +21,7 @@ interface IErrorResponse {
   data: ErrorData;
 }
 
-const API_BASE_URL = "http://localhost:5000/api/v1";
+const API_BASE_URL = "https://booknest-server-teal.vercel.app/api/v1";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
