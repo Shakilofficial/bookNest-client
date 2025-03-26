@@ -5,20 +5,17 @@ import Publishers from "@/components/main/Publishers";
 import RecomendedProducts from "@/components/main/RecomendedProducts";
 import { Testimonials } from "@/components/main/Testimonals";
 import WCU from "@/components/main/WCU";
-import Container from "@/components/utils/Container";
 
 const Home = () => {
   return (
-    <div>
+    <div className="space-y-12 md:space-y-20">
       <Hero />
-      <Container>
-        <FeaturedProducts />
-        <Categories />
-        <RecomendedProducts />
-        <Publishers />
-        <WCU />
-        <Testimonials />
-      </Container>
+      <FeaturedProducts />
+      <Categories />
+      <RecomendedProducts />
+      <Publishers />
+      <WCU />
+      <Testimonials />
     </div>
   );
 };
